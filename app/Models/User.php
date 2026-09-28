@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Attachment::class);
     }
+
+    public function ticketActivities(): HasMany
+    {
+        return $this->hasMany(TicketActivity::class);
+    }
 }
