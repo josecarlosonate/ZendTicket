@@ -12,7 +12,8 @@ class CategorySeeder extends Seeder
     public function run(CsvReader $csvReader): void
     {
         $rows = $csvReader->read(
-            database_path('seeders/data/categories.csv')
+            database_path('seeders/data/categories.csv'),
+            ['department_code', 'code', 'name', 'description', 'is_active']
         );
 
         foreach ($rows as $data) {

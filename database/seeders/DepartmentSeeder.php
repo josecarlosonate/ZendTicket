@@ -11,7 +11,8 @@ class DepartmentSeeder extends Seeder
     public function run(CsvReader $csvReader): void
     {
         $rows = $csvReader->read(
-            database_path('seeders/data/departments.csv')
+            database_path('seeders/data/departments.csv'),
+            ['code', 'name', 'description', 'is_active']
         );
 
         foreach ($rows as $data) {

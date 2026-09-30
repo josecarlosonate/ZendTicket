@@ -11,7 +11,8 @@ class TicketStatusSeeder extends Seeder
     public function run(CsvReader $csvReader): void
     {
         $rows = $csvReader->read(
-            database_path('seeders/data/ticket_statuses.csv')
+            database_path('seeders/data/ticket_statuses.csv'),
+            ['code', 'name']
         );
 
         foreach ($rows as $data) {
