@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             CategorySeeder::class,
             RolesAndPermissionsSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }
