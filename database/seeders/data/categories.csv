@@ -1,0 +1,9 @@
+department_code,code,name,description,is_active
+technical_support,hardware,Hardware,Incidentes y solicitudes relacionados con equipos físicos,1
+technical_support,software,Software,Incidentes y solicitudes relacionados con aplicaciones y programas,1
+technical_support,network,Redes y conectividad,Incidentes relacionados con redes y conectividad,1
+human_resources,payroll,Nómina,Solicitudes relacionadas con nómina,1
+human_resources,leave_requests,Permisos y ausencias,Solicitudes relacionadas con permisos y ausencias,1
+administration,general,Solicitudes generales,Solicitudes administrativas generales,1
+billing,invoices,Facturación,Solicitudes relacionadas con facturas,1
+billing,payments,Pagos,Solicitudes relacionadas con pagos,1
