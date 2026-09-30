@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 50)->unique();
             $table->string('name', 100)->unique();
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
