@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             TicketStatusSeeder::class,
             DepartmentSeeder::class,
             CategorySeeder::class,
+            RolesAndPermissionsSeeder::class,
         ]);
     }
 }
