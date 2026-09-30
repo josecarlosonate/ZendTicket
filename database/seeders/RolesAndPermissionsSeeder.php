@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Spatie\Permission\PermissionRegistrar;
+use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Illuminate\Database\Seeder;
+use Spatie\Permission\PermissionRegistrar;
 
 class RolesAndPermissionsSeeder extends Seeder
 {

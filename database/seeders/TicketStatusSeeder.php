@@ -8,7 +8,6 @@ use Illuminate\Database\Seeder;
 
 class TicketStatusSeeder extends Seeder
 {
-
     public function run(CsvReader $csvReader): void
     {
         $rows = $csvReader->read(
