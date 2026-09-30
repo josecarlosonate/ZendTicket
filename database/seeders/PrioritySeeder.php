@@ -11,7 +11,8 @@ class PrioritySeeder extends Seeder
     public function run(CsvReader $csvReader): void
     {
         $rows = $csvReader->read(
-            database_path('seeders/data/priorities.csv')
+            database_path('seeders/data/priorities.csv'),
+            ['name', 'level', 'is_active']
         );
 
         foreach ($rows as $data) {

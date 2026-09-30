@@ -6,7 +6,7 @@ use RuntimeException;
 
 class CsvReader
 {
-    public function read(string $path): array
+    public function read(string $path, array $expectedHeaders = []): array
     {
         if (! file_exists($path)) {
             throw new RuntimeException("CSV file not found: {$path}");
@@ -24,6 +24,14 @@ class CsvReader
             fclose($file);
 
             throw new RuntimeException("CSV file is empty: {$path}");
+        }
+
+        if ($expectedHeaders !== [] && $header !== $expectedHeaders) {
+            fclose($file);
+
+            throw new RuntimeException(
+                "CSV file has invalid headers: {$path}"
+            );
         }
 
         $rows = [];
