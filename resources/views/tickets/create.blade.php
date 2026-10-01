@@ -60,6 +60,7 @@
                             class="text-xs font-bold uppercase tracking-wider text-gray-500">Categoría</label>
                         <div class="relative">
                             <select name="category_id" id="category_id" required disabled
+                                data-old-category="{{ old('category_id') }}"
                                 class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#10b981] 
                                 focus:bg-white transition-all cursor-pointer text-gray-700 
                                 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 disabled:opacity-70">
