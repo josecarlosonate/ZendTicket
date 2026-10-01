@@ -7,7 +7,7 @@
     <main class="grow flex items-center justify-center px-6 py-12 relative overflow-hidden">
         <!-- Fondo Decorativo Sutil Detrás de la Tarjeta -->
         <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-100/50 rounded-full blur-3xl -z-10">
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 bg-emerald-100/50 rounded-full blur-3xl -z-10">
         </div>
 
         <div
@@ -17,7 +17,11 @@
                 <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">¡Bienvenido de nuevo!</h1>
                 <p class="text-sm text-gray-500">Ingresa tus credenciales para acceder a tu panel de soporte.</p>
             </div>
-
+            @error('error')
+                <p class="text-sm text-red-500">
+                    {{ $message }}
+                </p>
+            @enderror
             <!-- Formulario -->
             <form action="{{ route('login') }}" method="POST" class="space-y-5">
                 @csrf
@@ -33,10 +37,16 @@
                                     d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                             </svg>
                         </div>
-                        <input type="email" name="email" id="email" required autocomplete="email"
-                            placeholder="nombre@empresa.com"
-                            class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#10b981] focus:bg-white transition-all placeholder:text-gray-400" />
+                        <input type ="email" name="email" id="email" required autocomplete="email"
+                            value="{{ old('email') }}" placeholder="nombre@empresa.com"
+                            class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none 
+                            focus:border-[#10b981] focus:bg-white transition-all placeholder:text-gray-400" />
                     </div>
+                    @error('email')
+                        <p class="text-sm text-red-500">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
                 <!-- Campo de Password -->
@@ -44,7 +54,8 @@
                     <div class="flex justify-between items-center">
                         <label for="password"
                             class="text-xs font-bold uppercase tracking-wider text-gray-500">Contraseña</label>
-                        <a href="#" class="text-xs font-semibold text-[#10b981] hover:underline">¿La
+                        <a href={{ route('password.request') }}
+                            class="text-xs font-semibold text-[#10b981] hover:underline">¿La
                             olvidaste?</a>
                     </div>
                     <div class="relative">
@@ -56,8 +67,12 @@
                         </div>
                         <input type="password" name="password" id="password" required autocomplete="current-password"
                             placeholder="••••••••"
-                            class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#10b981] focus:bg-white transition-all placeholder:text-gray-400" />
+                            class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none 
+                            focus:border-[#10b981] focus:bg-white transition-all placeholder:text-gray-400" />
                     </div>
+                    @error('password')
+                        <p class="text-sm text-red-500">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Recordarme (Opcional, muy útil en logins) -->
@@ -69,7 +84,8 @@
 
                 <!-- Botón de Envío -->
                 <button type="submit"
-                    class="w-full px-5 py-3.5 rounded-xl bg-[#22c55e] text-white font-bold text-sm shadow-lg shadow-emerald-100 hover:bg-[#16a34a] hover:shadow-none transition-all uppercase tracking-wider">
+                    class="w-full px-5 py-3.5 rounded-xl bg-[#22c55e] text-white font-bold text-sm shadow-lg 
+                    shadow-emerald-100 hover:bg-[#16a34a] hover:shadow-none transition-all uppercase tracking-wider">
                     Ingresar al Sistema
                 </button>
             </form>
