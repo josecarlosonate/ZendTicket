@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Password;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class PasswordResetLinkController extends Controller
 {

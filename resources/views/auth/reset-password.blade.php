@@ -28,12 +28,17 @@
                 </p>
             </div>
 
+            @error('error')
+                <div class="p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-medium">
+                    {{ $message }}
+                </div>
+            @enderror
             <!-- Formulario de Actualización -->
-            <form method="POST" action="{{ route('') }}" class="space-y-5">
+            <form method="POST" action="{{ route('password.update') }}" class="space-y-5">
                 @csrf
 
                 <!-- Token requerido por Laravel para validar la solicitud de restablecimiento -->
-                <input type="hidden" name="token" value="">
+                <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
                 <!-- Campo de Correo Electrónico -->
                 <div class="space-y-2">
@@ -69,7 +74,8 @@
                         </div>
                         <input type="password" name="password" id="password" required autocomplete="new-password"
                             placeholder="••••••••"
-                            class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#10b981] 
+                            class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none 
+                            focus:border-[#10b981] 
                             focus:bg-white transition-all placeholder:text-gray-400 " />
                     </div>
                     @error('password')

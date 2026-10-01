@@ -17,6 +17,18 @@
                 <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">¡Bienvenido de nuevo!</h1>
                 <p class="text-sm text-gray-500">Ingresa tus credenciales para acceder a tu panel de soporte.</p>
             </div>
+            <!-- Alertas de estado de Laravel -->
+            @if (session('status'))
+                <div
+                    class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3 text-sm text-emerald-800 font-medium">
+                    <svg class="w-5 h-5 text-[#10b981] shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ session('status') }}</span>
+                </div>
+            @endif
             @error('error')
                 <p class="text-sm text-red-500">
                     {{ $message }}
