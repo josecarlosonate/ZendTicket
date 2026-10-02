@@ -119,7 +119,7 @@
             @endcan
         </header>
 
-        <section class="border border-gray-200 rounded-2xl bg-white shadow-sm shadow-gray-100 overflow-hidden">
+        <section class="relative z-30 border border-gray-200 rounded-2xl bg-white shadow-sm shadow-gray-100 overflow-visible">
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
                 <div class="px-5 py-4">
                     <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Departamento</p>
@@ -136,7 +136,7 @@
                     </p>
                 </div>
 
-                <div class="relative px-5 py-4">
+                <div class="relative z-20 px-5 py-4 overflow-visible">
                     <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Prioridad</p>
                     <div class="flex items-center gap-2 mt-2">
                         @include('tickets.partials.priority-badge', ['priority' => $ticket->priority])
@@ -152,7 +152,7 @@
 
                     @can('changePriority', $ticket)
                         <div id="priorityForm" @class([
-                            'absolute left-0 top-full mt-3 z-20 w-72 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-lg p-5',
+                            'absolute left-0 top-full mt-3 z-40 w-72 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-xl p-5',
                             'hidden' => !$errors->has('priority_id'),
                         ])>
                             <div class="mb-4">
