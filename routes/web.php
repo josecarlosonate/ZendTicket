@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    Route::patch('/tickets/{ticket}/assignment', [TicketController::class, 'assign'])->name('tickets.assign');
 
     Route::get('/departments/{department}/categories', [TicketController::class, 'categories'])->name('departments.categories');
 });
