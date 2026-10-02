@@ -19,7 +19,8 @@
 
             @can('create', App\Models\Ticket::class)
                 <a href="{{ route('tickets.create') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition">
+                    class="bg-[#22c55e] text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md shadow-emerald-100 hover:bg-[#16a34a] 
+                    transition-all flex items-center gap-2 no-underline">
                     <x-heroicon-o-plus class="w-4 h-4" />
                     Nueva solicitud
                 </a>
@@ -36,9 +37,11 @@
                                 Ticket
                             </th>
 
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                Solicitante
-                            </th>
+                            @canany(['tickets.view_assigned', 'tickets.view_all'])
+                                <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    Solicitante
+                                </th>
+                            @endcanany
 
                             <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
                                 Departamento
@@ -80,11 +83,13 @@
                                 </td>
 
                                 {{-- Solicitante --}}
-                                <td class="px-6 py-5">
-                                    <span class="text-sm text-gray-700">
-                                        {{ $ticket->requester->name }}
-                                    </span>
-                                </td>
+                                @canany(['tickets.view_assigned', 'tickets.view_all'])
+                                    <td class="px-6 py-5">
+                                        <span class="text-sm text-gray-700">
+                                            {{ $ticket->requester->name }}
+                                        </span>
+                                    </td>
+                                @endcanany
 
                                 {{-- Departamento --}}
                                 <td class="px-6 py-5">

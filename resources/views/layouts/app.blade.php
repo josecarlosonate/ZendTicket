@@ -79,16 +79,17 @@
                 </div>
             </div>
 
-            <!-- Acciones Rápidas del Navbar -->
+            <!-- Información y Nombre del Usuario -->
             <div class="flex items-center gap-4">
-                @can('create', App\Models\Ticket::class)
-                    <a href="{{ route('tickets.create') }}"
-                        class="bg-[#22c55e] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-emerald-100 hover:bg-[#16a34a] 
-                    transition-all flex items-center gap-2 no-underline">
-                        <x-heroicon-o-plus class="w-4 h-4" />
-                        NUEVA SOLICITUD
-                    </a>
-                @endcan
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-bold text-gray-900 tracking-tight leading-tight">
+                        {{ Auth::user()->name }}
+                    </p>
+                    <p class="text-[10px] text-gray-400 font-medium tracking-wider uppercase">
+                        {{ Auth::user()->roles->first()->name }}
+                    </p>
+                </div>
+
                 <div class="relative">
                     <button id="layoutUserMenuBtn"
                         class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 border border-gray-100 block focus:outline-none focus:ring-2 focus:ring-offset-2 
@@ -124,7 +125,9 @@
                         </form>
                     </div>
                 </div>
+
             </div>
+
         </header>
 
         <!-- 3. Contenedor de Inyección Dinámica de Contenido -->
