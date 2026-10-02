@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,8 +10,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Ticket extends Model
 {
     protected $fillable = [
+        'ticket_number',
+        'requester_id',
+        'assigned_to',
+        'department_id',
+        'category_id',
+        'priority_id',
+        'status_id',
         'subject',
         'description',
+        'first_responded_at',
+        'resolved_at',
+        'closed_at',
+        'due_at',
     ];
 
     protected function casts(): array
@@ -21,6 +33,23 @@ class Ticket extends Model
             'closed_at' => 'datetime',
             'due_at' => 'datetime',
         ];
+    }
+
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->can('tickets.view_all')) {
+            return $query;
+        }
+
+        if ($user->can('tickets.view_assigned')) {
+            return $query->where('assigned_to', $user->id);
+        }
+
+        if ($user->can('tickets.view_own')) {
+            return $query->where('requester_id', $user->id);
+        }
+
+        abort(403);
     }
 
     public function requester(): BelongsTo

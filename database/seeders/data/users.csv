@@ -1,0 +1,7 @@
+name,email,user_type,role
+Cliente Uno,cliente1@zendticket.test,internal,customer
+Cliente Dos,cliente2@zendticket.test,internal,customer
+Cliente Tres,cliente3@zendticket.test,internal,customer
+Agente Uno,agente1@zendticket.test,internal,agent
+Agente Dos,agente2@zendticket.test,internal,agent
+Supervisor,supervisor@zendticket.test,internal,supervisor
