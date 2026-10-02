@@ -22,6 +22,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'tickets.assign',
             'tickets.change_status',
             'tickets.change_priority',
+            'tickets.close',
 
             'comments.create',
             'comments.create_internal',
@@ -58,6 +59,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'tickets.assign',
                 'tickets.change_status',
                 'tickets.change_priority',
+                'tickets.close',
                 'comments.create',
                 'comments.create_internal',
                 'attachments.create',
@@ -70,6 +72,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'tickets.assign',
                 'tickets.change_status',
                 'tickets.change_priority',
+                'tickets.close',
                 'catalogs.manage',
                 'users.manage',
                 'roles.manage',

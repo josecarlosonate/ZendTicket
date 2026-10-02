@@ -3,74 +3,76 @@
 @section('title', $ticket->ticket_number . ' - ZendTicket')
 
 @section('content')
-
-    <div class="max-w-7xl mx-auto px-8 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
 
         @if (session('success'))
             <div
                 class="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3 text-sm text-emerald-800">
                 <x-heroicon-o-check-circle class="w-5 h-5 shrink-0 text-emerald-500" />
-                <span>
-                    {{ session('success') }}
-                </span>
+                <span>{{ session('success') }}</span>
             </div>
         @endif
 
-        {{-- Navegación --}}
-        <div class="mb-8">
+        @if (session('error'))
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-sm text-red-700">
+                <x-heroicon-o-exclamation-circle class="w-5 h-5 shrink-0 text-red-500" />
+                <span>{{ session('error') }}</span>
+            </div>
+        @endif
+
+        <div class="mb-6">
             <a href="{{ route('dashboard') }}"
-                class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-[#10b981] transition-colors group">
+                class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-[#10b981] transition-colors">
                 <x-heroicon-o-arrow-left class="w-4 h-4" />
                 Volver al Panel
             </a>
         </div>
 
-        {{-- Cabecera del ticket --}}
-        <header class="flex items-start justify-between gap-8 mb-10">
-            <div>
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-sm font-semibold text-emerald-600">
+        <header class="relative z-40 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between mb-6">
+            <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <span class="text-[11px] font-bold tracking-wide text-[#10b981]">
                         {{ $ticket->ticket_number }}
                     </span>
-
-                    <span
-                        class="px-2.5 py-1 rounded-md bg-emerald-50 border text-emerald-700 text-[10px] font-extrabold uppercase tracking-wider">
-                        {{ $ticket->status->name }}
-                    </span>
+                    @include('tickets.partials.status-badge', ['status' => $ticket->status])
                 </div>
 
-                <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                <h1 class="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
                     {{ $ticket->subject }}
                 </h1>
 
-                <p class="mt-3 text-sm text-gray-500">
-                    Creado por
-                    <span class="font-medium text-gray-700">
-                        {{ $ticket->requester->name }}
+                <p class="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+                    <span
+                        class="flex items-center justify-center w-7 h-7 rounded-full bg-gray-100 text-[11px] font-bold text-gray-600">
+                        {{ strtoupper(mb_substr($ticket->requester->name, 0, 1)) }}
                     </span>
-                    ·
-                    {{ $ticket->created_at->format('d/m/Y H:i') }}
+                    <span>
+                        Creado por
+                        <span class="font-medium text-gray-700">{{ $ticket->requester->name }}</span>
+                    </span>
+                    <span class="text-gray-300">·</span>
+                    <time datetime="{{ $ticket->created_at->toIso8601String() }}">
+                        {{ $ticket->created_at->format('d/m/Y H:i') }}
+                    </time>
                 </p>
             </div>
 
             @can('tickets.assign')
-                <div class="relative">
+                <div class="relative shrink-0">
                     <button id="assignmentButton" type="button"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white
-                                text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors cursor-pointer">
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
                         <x-heroicon-o-user-plus class="w-4 h-4" />
                         {{ $ticket->assignee ? 'Reasignar agente' : 'Asignar agente' }}
                     </button>
 
                     <div id="assignmentForm" @class([
-                        'absolute right-0 top-full mt-3 z-20 w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-5',
+                        'absolute right-0 top-full mt-3 z-50 w-80 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-xl p-5',
                         'hidden' => !$errors->has('agent_id'),
                     ])>
                         <div class="mb-4">
                             <h3 class="text-sm font-semibold text-gray-900">
                                 {{ $ticket->assignee ? 'Reasignar agente' : 'Asignar agente' }}
                             </h3>
-
                             <p class="mt-1 text-xs text-gray-500">
                                 Selecciona el agente responsable del ticket.
                             </p>
@@ -80,19 +82,16 @@
                             @csrf
                             @method('PATCH')
 
-                            <label for="agent_id" class="block mb-2 text-xs font-semibold text-gray-500">
+                            <label for="agent_id" class="block mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">
                                 Agente
                             </label>
 
                             <select id="agent_id" name="agent_id" @class([
-                                'w-full rounded-lg text-sm',
-                                'border-red-300 focus:border-red-500 focus:ring-red-500' => $errors->has(
-                                    'agent_id'),
-                                'border-gray-300 focus:border-emerald-500 focus:ring-emerald-500' => !$errors->has(
-                                    'agent_id'),
+                                'w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:bg-white transition-all cursor-pointer',
+                                'border-red-300 focus:border-red-500' => $errors->has('agent_id'),
+                                'border-gray-200 focus:border-[#10b981]' => !$errors->has('agent_id'),
                             ])>
                                 <option value="">Selecciona un agente</option>
-
                                 @foreach ($agents as $agent)
                                     <option value="{{ $agent->id }}" @selected(old('agent_id', $ticket->assigned_to) == $agent->id)>
                                         {{ $agent->name }}
@@ -101,9 +100,7 @@
                             </select>
 
                             @error('agent_id')
-                                <p class="mt-2 text-xs text-red-600">
-                                    {{ $message }}
-                                </p>
+                                <p class="mt-2 text-xs font-semibold text-red-500">{{ $message }}</p>
                             @enderror
 
                             <div class="flex justify-end gap-2 mt-5">
@@ -111,10 +108,8 @@
                                     class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 cursor-pointer">
                                     Cancelar
                                 </button>
-
                                 <button type="submit"
-                                    class="px-4 py-2 bg-emerald-600 text-white text-sm font-semibold
-                                    rounded-lg hover:bg-emerald-700 transition-colors cursor-pointer">
+                                    class="px-4 py-2 bg-[#22c55e] text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-100 hover:bg-[#16a34a] transition-all cursor-pointer">
                                     Asignar
                                 </button>
                             </div>
@@ -122,48 +117,33 @@
                     </div>
                 </div>
             @endcan
-
         </header>
 
-        {{-- Información general --}}
-        <section class="border-y border-gray-200 py-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                        Departamento
-                    </p>
-
-                    <p class="mt-2 text-sm font-medium text-gray-800">
+        <section class="relative z-30 border border-gray-200 rounded-2xl bg-white shadow-sm shadow-gray-100 overflow-visible">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+                <div class="px-5 py-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Departamento</p>
+                    <p class="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-gray-800">
+                        <x-heroicon-o-building-office-2 class="w-4 h-4 text-gray-400" />
                         {{ $ticket->department->name }}
                     </p>
                 </div>
 
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                        Categoría
-                    </p>
-
+                <div class="px-5 py-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Categoría</p>
                     <p class="mt-2 text-sm font-medium text-gray-800">
                         {{ $ticket->category->name }}
                     </p>
                 </div>
 
-                <div class="relative">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                        Prioridad
-                    </p>
-
+                <div class="relative z-20 px-5 py-4 overflow-visible">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Prioridad</p>
                     <div class="flex items-center gap-2 mt-2">
-                        <p class="text-sm font-medium text-gray-800">
-                            {{ $ticket->priority->name }}
-                        </p>
+                        @include('tickets.partials.priority-badge', ['priority' => $ticket->priority])
 
                         @can('changePriority', $ticket)
                             <button id="priorityButton" type="button"
-                                class="inline-flex items-center justify-center w-7 h-7 rounded-md
-                                bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600
-                                transition-colors cursor-pointer"
+                                class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-emerald-50 hover:text-[#10b981] transition-colors cursor-pointer"
                                 title="Cambiar prioridad">
                                 <x-heroicon-o-pencil-square class="w-4 h-4" />
                             </button>
@@ -172,14 +152,11 @@
 
                     @can('changePriority', $ticket)
                         <div id="priorityForm" @class([
-                            'absolute left-0 top-full mt-3 z-20 w-72 bg-white border border-gray-200 rounded-xl shadow-lg p-5',
+                            'absolute left-0 top-full mt-3 z-40 w-72 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-xl p-5',
                             'hidden' => !$errors->has('priority_id'),
                         ])>
                             <div class="mb-4">
-                                <h3 class="text-sm font-semibold text-gray-900">
-                                    Cambiar prioridad
-                                </h3>
-
+                                <h3 class="text-sm font-semibold text-gray-900">Cambiar prioridad</h3>
                                 <p class="mt-1 text-xs text-gray-500">
                                     Selecciona la nueva prioridad del ticket.
                                 </p>
@@ -189,16 +166,14 @@
                                 @csrf
                                 @method('PATCH')
 
-                                <label for="priority_id" class="block mb-2 text-xs font-semibold text-gray-500">
+                                <label for="priority_id" class="block mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">
                                     Prioridad
                                 </label>
 
                                 <select id="priority_id" name="priority_id" @class([
-                                    'w-full rounded-lg text-sm',
-                                    'border-red-300 focus:border-red-500 focus:ring-red-500' => $errors->has(
-                                        'priority_id'),
-                                    'border-gray-300 focus:border-emerald-500 focus:ring-emerald-500' => !$errors->has(
-                                        'priority_id'),
+                                    'w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:bg-white transition-all cursor-pointer',
+                                    'border-red-300 focus:border-red-500' => $errors->has('priority_id'),
+                                    'border-gray-200 focus:border-[#10b981]' => !$errors->has('priority_id'),
                                 ])>
                                     @foreach ($priorities as $priority)
                                         <option value="{{ $priority->id }}" @selected(old('priority_id', $ticket->priority_id) == $priority->id)>
@@ -208,9 +183,7 @@
                                 </select>
 
                                 @error('priority_id')
-                                    <p class="mt-2 text-xs text-red-600">
-                                        {{ $message }}
-                                    </p>
+                                    <p class="mt-2 text-xs font-semibold text-red-500">{{ $message }}</p>
                                 @enderror
 
                                 <div class="flex justify-end gap-2 mt-5">
@@ -218,10 +191,8 @@
                                         class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 cursor-pointer">
                                         Cancelar
                                     </button>
-
                                     <button type="submit"
-                                        class="px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg
-                                        hover:bg-emerald-700 transition-colors cursor-pointer">
+                                        class="px-4 py-2 bg-[#22c55e] text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-100 hover:bg-[#16a34a] transition-all cursor-pointer">
                                         Actualizar
                                     </button>
                                 </div>
@@ -230,45 +201,41 @@
                     @endcan
                 </div>
 
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                        Agente asignado
-                    </p>
-
-                    <p class="mt-2 text-sm font-medium text-gray-800">
-                        {{ $ticket->assignee?->name ?? 'Sin asignar' }}
+                <div class="px-5 py-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Agente asignado</p>
+                    <p class="mt-2 inline-flex items-center gap-2 text-sm font-medium text-gray-800">
+                        @if ($ticket->assignee)
+                            <span
+                                class="flex items-center justify-center w-7 h-7 rounded-full bg-emerald-50 text-[11px] font-bold text-emerald-700">
+                                {{ strtoupper(mb_substr($ticket->assignee->name, 0, 1)) }}
+                            </span>
+                            {{ $ticket->assignee->name }}
+                        @else
+                            <span class="text-gray-400 font-normal">Sin asignar</span>
+                        @endif
                     </p>
                 </div>
-
             </div>
         </section>
 
-        {{-- Descripción --}}
-        <section class="py-10 border-b border-gray-200">
-            <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-5">
-                Descripción
-            </h2>
-
-            <div class="text-gray-700 leading-7 whitespace-pre-line">
+        <section class="mt-6 border border-gray-200 rounded-2xl bg-white shadow-sm shadow-gray-100 px-5 sm:px-6 py-6">
+            <h2 class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-4">Descripción</h2>
+            <div class="text-sm text-gray-700 leading-7 whitespace-pre-line">
                 {{ $ticket->description }}
             </div>
         </section>
 
-        {{-- Conversación --}}
-        <section class="py-10">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-lg font-semibold text-gray-900">
-                    Conversación
-                </h2>
+        <section class="mt-6 border border-gray-200 rounded-2xl bg-white shadow-sm shadow-gray-100 px-5 sm:px-6 py-6">
+            <h2 class="text-sm font-semibold text-gray-900">Conversación</h2>
+            <div class="mt-5 flex flex-col items-center px-6 py-10 text-center">
+                <div class="flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-50 mb-4">
+                    <x-heroicon-o-chat-bubble-left-right class="w-6 h-6 text-[#10b981]" />
+                </div>
+                <p class="text-sm font-semibold text-gray-900">Aún no hay respuestas</p>
+                <p class="mt-1 text-sm text-gray-500">Este ticket todavía no tiene mensajes en la conversación.</p>
             </div>
-
-            <p class="text-sm text-gray-400">
-                Aún no hay respuestas en este ticket.
-            </p>
         </section>
-
     </div>
-
 @endsection
 
 @push('scripts')
