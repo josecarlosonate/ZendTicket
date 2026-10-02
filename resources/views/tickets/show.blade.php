@@ -28,7 +28,7 @@
             </a>
         </div>
 
-        <header class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between mb-6">
+        <header class="relative z-40 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between mb-6">
             <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2.5">
                     <span class="text-[11px] font-bold tracking-wide text-[#10b981]">
@@ -66,7 +66,7 @@
                     </button>
 
                     <div id="assignmentForm" @class([
-                        'absolute right-0 top-full mt-3 z-20 w-80 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-lg p-5',
+                        'absolute right-0 top-full mt-3 z-50 w-80 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-xl p-5',
                         'hidden' => !$errors->has('agent_id'),
                     ])>
                         <div class="mb-4">
