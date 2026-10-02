@@ -195,9 +195,9 @@
             </div>
         </div>
 
-        @if ($tickets->hasPages())
+        @if ($tickets->total() > 0)
             <div class="mt-6">
-                {{ $tickets->onEachSide(1)->links() }}
+                {{ $tickets->onEachSide(1)->links('vendor.pagination.zendticket') }}
             </div>
         @endif
     </div>
