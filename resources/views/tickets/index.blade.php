@@ -3,127 +3,174 @@
 @section('title', 'Tickets - ZendTicket')
 
 @section('content')
-    <div class="max-w-7xl mx-auto px-8 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
 
-        {{-- Encabezado --}}
-        <header class="flex items-start justify-between gap-6 mb-8">
+        @if (session('success'))
+            <div
+                class="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3 text-sm text-emerald-800">
+                <x-heroicon-o-check-circle class="w-5 h-5 shrink-0 text-emerald-500" />
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div
+                class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-sm text-red-700">
+                <x-heroicon-o-exclamation-circle class="w-5 h-5 shrink-0 text-red-500" />
+                <span>{{ session('error') }}</span>
+            </div>
+        @endif
+
+        <header class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#10b981]">
+                    Bandeja
+                </p>
+                <h1 class="mt-1 text-3xl font-extrabold tracking-tight text-gray-900">
                     Tickets
                 </h1>
-
-                <p class="mt-2 text-sm text-gray-500">
+                <p class="mt-2 text-sm text-gray-500 max-w-xl">
                     Consulta y gestiona las solicitudes disponibles para tu usuario.
                 </p>
             </div>
 
-            @can('create', App\Models\Ticket::class)
-                <a href="{{ route('tickets.create') }}"
-                    class="bg-[#22c55e] text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md shadow-emerald-100 hover:bg-[#16a34a] 
-                    transition-all flex items-center gap-2 no-underline">
-                    <x-heroicon-o-plus class="w-4 h-4" />
-                    Nueva solicitud
-                </a>
-            @endcan
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-gray-200 text-sm text-gray-600">
+                    <x-heroicon-o-ticket class="w-4 h-4 text-[#10b981]" />
+                    <span class="font-semibold text-gray-900">{{ $tickets->total() }}</span>
+                    <span>{{ $tickets->total() === 1 ? 'solicitud' : 'solicitudes' }}</span>
+                </div>
+
+                @can('create', App\Models\Ticket::class)
+                    <a href="{{ route('tickets.create') }}"
+                        class="bg-[#22c55e] text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-emerald-100 hover:bg-[#16a34a] transition-all flex items-center gap-2 no-underline">
+                        <x-heroicon-o-plus class="w-4 h-4" />
+                        Nueva solicitud
+                    </a>
+                @endcan
+            </div>
         </header>
 
-        {{-- Tabla --}}
-        <div class="border border-gray-200 rounded-xl overflow-hidden bg-white">
-            <div class="overflow-x-auto">
+        <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm shadow-gray-100">
+            <div class="flex items-center justify-between gap-4 px-5 sm:px-6 py-4 border-b border-gray-100 bg-gray-50/70">
+                <div>
+                    <h2 class="text-sm font-semibold text-gray-900">Solicitudes recientes</h2>
+                    <p class="mt-0.5 text-xs text-gray-500">
+                        Ordenadas de la más nueva a la más antigua.
+                    </p>
+                </div>
+                @if ($tickets->hasPages())
+                    <p class="text-xs font-medium text-gray-400">
+                        Página {{ $tickets->currentPage() }} de {{ $tickets->lastPage() }}
+                    </p>
+                @endif
+            </div>
+
+            {{-- Lista móvil --}}
+            <div class="md:hidden divide-y divide-gray-100">
+                @forelse ($tickets as $ticket)
+                    <a href="{{ route('tickets.show', $ticket) }}"
+                        class="block px-5 py-4 hover:bg-gray-50 transition no-underline">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <p class="text-[11px] font-bold tracking-wide text-[#10b981]">
+                                    {{ $ticket->ticket_number }}
+                                </p>
+                                <p class="mt-1 text-sm font-semibold text-gray-900 truncate">
+                                    {{ $ticket->subject }}
+                                </p>
+                            </div>
+                            <x-heroicon-o-chevron-right class="w-4 h-4 text-gray-300 shrink-0 mt-1" />
+                        </div>
+
+                        <div class="mt-3 flex flex-wrap items-center gap-2">
+                            @include('tickets.partials.status-badge', ['status' => $ticket->status])
+                            @include('tickets.partials.priority-badge', ['priority' => $ticket->priority])
+                        </div>
+
+                        <div class="mt-3 flex items-center justify-between gap-3 text-xs text-gray-500">
+                            <span class="truncate">{{ $ticket->department->name }}</span>
+                            <time datetime="{{ $ticket->created_at->toIso8601String() }}" title="{{ $ticket->created_at->format('d/m/Y H:i') }}">
+                                {{ $ticket->created_at->format('d/m/Y') }}
+                            </time>
+                        </div>
+                    </a>
+                @empty
+                    @include('tickets.partials.empty-state')
+                @endforelse
+            </div>
+
+            {{-- Tabla escritorio --}}
+            <div class="hidden md:block overflow-x-auto">
                 <table class="w-full text-left">
-                    <thead class="bg-gray-50 border-b border-gray-200">
+                    <thead class="bg-white border-b border-gray-100">
                         <tr>
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                Ticket
-                            </th>
-
+                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Ticket</th>
                             @canany(['tickets.view_assigned', 'tickets.view_all'])
-                                <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    Solicitante
-                                </th>
+                                <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Solicitante</th>
                             @endcanany
-
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                Departamento
-                            </th>
-
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                Prioridad
-                            </th>
-
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                Estado
-                            </th>
-
-                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                Fecha
-                            </th>
-
-                            <th class="px-6 py-4">
-                                <span class="sr-only">Acciones</span>
-                            </th>
+                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Departamento</th>
+                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Prioridad</th>
+                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Estado</th>
+                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Fecha</th>
+                            <th class="px-6 py-3"><span class="sr-only">Acciones</span></th>
                         </tr>
                     </thead>
-
                     <tbody class="divide-y divide-gray-100">
                         @forelse ($tickets as $ticket)
-                            <tr class="hover:bg-gray-50 transition">
-                                {{-- Ticket --}}
-                                <td class="px-6 py-5">
+                            <tr class="group hover:bg-emerald-50/40 transition">
+                                <td class="px-6 py-4">
                                     <div class="min-w-56">
                                         <a href="{{ route('tickets.show', $ticket) }}"
-                                            class="text-sm font-semibold text-gray-900 hover:text-emerald-600 transition">
+                                            class="text-sm font-semibold text-gray-900 hover:text-[#10b981] transition">
                                             {{ $ticket->subject }}
                                         </a>
-
-                                        <p class="mt-1 text-xs font-medium text-emerald-600">
+                                        <p class="mt-1 text-[11px] font-bold tracking-wide text-[#10b981]">
                                             {{ $ticket->ticket_number }}
                                         </p>
                                     </div>
                                 </td>
 
-                                {{-- Solicitante --}}
                                 @canany(['tickets.view_assigned', 'tickets.view_all'])
-                                    <td class="px-6 py-5">
-                                        <span class="text-sm text-gray-700">
-                                            {{ $ticket->requester->name }}
-                                        </span>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2.5 min-w-40">
+                                            <span
+                                                class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-[11px] font-bold text-gray-600 shrink-0">
+                                                {{ strtoupper(mb_substr($ticket->requester->name, 0, 1)) }}
+                                            </span>
+                                            <span class="text-sm text-gray-700 truncate">
+                                                {{ $ticket->requester->name }}
+                                            </span>
+                                        </div>
                                     </td>
                                 @endcanany
 
-                                {{-- Departamento --}}
-                                <td class="px-6 py-5">
-                                    <span class="text-sm text-gray-700">
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center gap-1.5 text-sm text-gray-700">
+                                        <x-heroicon-o-building-office-2 class="w-4 h-4 text-gray-400" />
                                         {{ $ticket->department->name }}
                                     </span>
                                 </td>
 
-                                {{-- Prioridad --}}
-                                <td class="px-6 py-5">
-                                    <span class="text-sm font-medium text-gray-700">
-                                        {{ $ticket->priority->name }}
-                                    </span>
+                                <td class="px-6 py-4">
+                                    @include('tickets.partials.priority-badge', ['priority' => $ticket->priority])
                                 </td>
 
-                                {{-- Estado --}}
-                                <td class="px-6 py-5">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-50 text-xs font-semibold text-emerald-700">
-                                        {{ $ticket->status->name }}
-                                    </span>
+                                <td class="px-6 py-4">
+                                    @include('tickets.partials.status-badge', ['status' => $ticket->status])
                                 </td>
 
-                                {{-- Fecha --}}
-                                <td class="px-6 py-5 whitespace-nowrap">
-                                    <span class="text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <time class="text-sm text-gray-500"
+                                        datetime="{{ $ticket->created_at->toIso8601String() }}"
+                                        title="{{ $ticket->created_at->format('d/m/Y H:i') }}">
                                         {{ $ticket->created_at->format('d/m/Y') }}
-                                    </span>
+                                    </time>
                                 </td>
 
-                                {{-- Acción --}}
-                                <td class="px-6 py-5 text-right">
+                                <td class="px-6 py-4 text-right">
                                     <a href="{{ route('tickets.show', $ticket) }}"
-                                        class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition"
+                                        class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-gray-400 group-hover:text-[#10b981] group-hover:bg-white transition"
                                         title="Ver ticket">
                                         <x-heroicon-o-chevron-right class="w-5 h-5" />
                                         <span class="sr-only">Ver ticket</span>
@@ -132,29 +179,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-16 text-center">
-                                    <div class="flex flex-col items-center">
-                                        <div
-                                            class="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-4">
-                                            <x-heroicon-o-ticket class="w-6 h-6 text-gray-400" />
-                                        </div>
-
-                                        <h2 class="text-sm font-semibold text-gray-900">
-                                            No hay tickets disponibles
-                                        </h2>
-
-                                        <p class="mt-1 text-sm text-gray-500">
-                                            No tienes solicitudes para mostrar en este momento.
-                                        </p>
-
-                                        @can('create', App\Models\Ticket::class)
-                                            <a href="{{ route('tickets.create') }}"
-                                                class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700">
-                                                <x-heroicon-o-plus class="w-4 h-4" />
-                                                Crear primera solicitud
-                                            </a>
-                                        @endcan
-                                    </div>
+                                <td colspan="7" class="px-6 py-6">
+                                    @include('tickets.partials.empty-state')
                                 </td>
                             </tr>
                         @endforelse
@@ -163,12 +189,10 @@
             </div>
         </div>
 
-        {{-- Paginación --}}
         @if ($tickets->hasPages())
             <div class="mt-6">
-                {{ $tickets->links() }}
+                {{ $tickets->onEachSide(1)->links() }}
             </div>
         @endif
-
     </div>
 @endsection
