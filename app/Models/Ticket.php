@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class Ticket extends Model
 {
@@ -32,6 +33,23 @@ class Ticket extends Model
             'closed_at' => 'datetime',
             'due_at' => 'datetime',
         ];
+    }
+
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->can('tickets.view_all')) {
+            return $query;
+        }
+
+        if ($user->can('tickets.view_assigned')) {
+            return $query->where('assigned_to', $user->id);
+        }
+
+        if ($user->can('tickets.view_own')) {
+            return $query->where('requester_id', $user->id);
+        }
+
+        abort(403);
     }
 
     public function requester(): BelongsTo

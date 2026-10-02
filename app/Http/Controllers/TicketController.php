@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTicketRequest;
 use App\Models\Department;
 use App\Models\Priority;
 use App\Models\Ticket;
-use App\Http\Requests\StoreTicketRequest;
-use App\Models\TicketStatus;
-use Illuminate\Support\Facades\Gate;
 use App\Models\TicketSequence;
+use App\Models\TicketStatus;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class TicketController extends Controller
 {
@@ -35,7 +36,6 @@ class TicketController extends Controller
         return response()->json($categories);
     }
 
-
     public function store(StoreTicketRequest $request)
     {
         $data = $request->validated();
@@ -54,6 +54,7 @@ class TicketController extends Controller
                 $ticketNumber = sprintf('ZT-%d-%06d', $year, $number);
 
                 $openStatus = TicketStatus::where('code', 'open')->firstOrFail();
+
                 return Ticket::create([
                     'ticket_number' => $ticketNumber,
                     'requester_id' => $request->user()->id,
@@ -70,6 +71,7 @@ class TicketController extends Controller
                 ->with('success', "Ticket {$ticket->ticket_number} creado correctamente.");
         } catch (\Throwable $exception) {
             report($exception);
+
             return back()->withInput()
                 ->with('error', 'No fue posible crear el ticket. Inténtalo nuevamente.');
         }
@@ -85,6 +87,17 @@ class TicketController extends Controller
             'priority',
             'status',
         ]);
+
         return view('tickets.show', compact('ticket'));
+    }
+
+    public function index(Request $request)
+    {
+        $tickets = Ticket::query()
+            ->visibleTo($request->user())->with(['requester', 'department', 'priority', 'status'])
+            ->latest()
+            ->paginate(15);
+
+        return view('tickets.index', compact('tickets'));
     }
 }

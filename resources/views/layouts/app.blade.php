@@ -49,7 +49,7 @@
                     title="Panel Principal">
                     <x-heroicon-o-squares-2x2 class="w-5 h-5" />
                 </a>
-                <a href="#"
+                <a href="{{ route('tickets.index') }}"
                     class="p-3 rounded-xl flex justify-center transition-all 
                     {{ request()->routeIs('tickets.*')
                         ? 'bg-emerald-50 text-[#10b981] shadow-sm'
@@ -81,12 +81,14 @@
 
             <!-- Acciones Rápidas del Navbar -->
             <div class="flex items-center gap-4">
-                <a href="{{ route('tickets.create') }}"
-                    class="bg-[#22c55e] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-emerald-100 hover:bg-[#16a34a] 
+                @can('create', App\Models\Ticket::class)
+                    <a href="{{ route('tickets.create') }}"
+                        class="bg-[#22c55e] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-emerald-100 hover:bg-[#16a34a] 
                     transition-all flex items-center gap-2 no-underline">
-                    <x-heroicon-o-plus class="w-4 h-4" />
-                    NUEVA SOLICITUD
-                </a>
+                        <x-heroicon-o-plus class="w-4 h-4" />
+                        NUEVA SOLICITUD
+                    </a>
+                @endcan
                 <div class="relative">
                     <button id="layoutUserMenuBtn"
                         class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 border border-gray-100 block focus:outline-none focus:ring-2 focus:ring-offset-2 

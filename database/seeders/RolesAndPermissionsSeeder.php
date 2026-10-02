@@ -42,7 +42,6 @@ class RolesAndPermissionsSeeder extends Seeder
             ],
 
             'agent' => [
-                'tickets.create',
                 'tickets.view_assigned',
                 'tickets.update',
                 'tickets.change_status',
@@ -52,7 +51,6 @@ class RolesAndPermissionsSeeder extends Seeder
             ],
 
             'supervisor' => [
-                'tickets.create',
                 'tickets.view_assigned',
                 'tickets.view_all',
                 'tickets.update',
@@ -63,14 +61,22 @@ class RolesAndPermissionsSeeder extends Seeder
                 'attachments.create',
                 'reports.view',
             ],
+
+            'admin' => [
+                'tickets.view_all',
+                'tickets.update',
+                'tickets.assign',
+                'tickets.change_status',
+                'catalogs.manage',
+                'users.manage',
+                'roles.manage',
+                'reports.view',
+            ],
         ];
 
         foreach ($permissions as $permission) {
             Permission::findOrCreate($permission);
         }
-
-        $admin = Role::findOrCreate('admin');
-        $admin->syncPermissions(Permission::all());
 
         foreach ($roles as $roleName => $rolePermissions) {
             $role = Role::findOrCreate($roleName);
