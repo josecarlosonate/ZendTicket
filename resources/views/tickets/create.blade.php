@@ -6,15 +6,11 @@
 
     <main class="grow p-5 md:p-8 flex justify-center items-start bg-slate-50 min-h-screen">
         <section
-            class="w-full max-w-3xl bg-white border border-gray-100 p-6 md:p-10 rounded-3xl shadow-xl shadow-gray-200/50 space-y-8">
+            class="w-full max-w-6xl bg-white border border-gray-100 p-6 md:p-10 rounded-3xl shadow-xl shadow-gray-200/50 space-y-8">
 
             <!-- Encabezado del Formulario -->
             <header class="border-b border-gray-50 pb-5 space-y-2">
                 <div class="flex items-center gap-3">
-                    <div
-                        class="w-10 h-10 bg-emerald-50 text-[#10b981] rounded-xl flex items-center justify-center shadow-inner">
-                        <x-heroicon-o-plus class="w-5 h-5" />
-                    </div>
                     <div>
                         <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Crear ticket</h1>
                         <p class="text-sm text-gray-400 font-medium">Describe el problema o solicitud que necesitas reportar
@@ -22,7 +18,11 @@
                     </div>
                 </div>
             </header>
-
+            @if (session('error'))
+                <div class="p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-medium">
+                    {{ session('error') }}
+                </div>
+            @endif
             <!-- Formulario con Directivas Blade de Laravel -->
             <form method="POST" action="{{ route('tickets.store') }}" class="space-y-6">
                 @csrf

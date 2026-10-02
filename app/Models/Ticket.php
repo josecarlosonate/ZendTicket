@@ -9,8 +9,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Ticket extends Model
 {
     protected $fillable = [
+        'ticket_number',
+        'requester_id',
+        'assigned_to',
+        'department_id',
+        'category_id',
+        'priority_id',
+        'status_id',
         'subject',
         'description',
+        'first_responded_at',
+        'resolved_at',
+        'closed_at',
+        'due_at',
     ];
 
     protected function casts(): array

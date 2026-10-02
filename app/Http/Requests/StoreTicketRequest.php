@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Ticket;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTicketRequest extends FormRequest
 {
@@ -25,7 +26,12 @@ class StoreTicketRequest extends FormRequest
     {
         return [
             'department_id' => ['required', 'integer', 'exists:departments,id'],
-            'category_id' => ['required', 'integer', 'exists:categories,id'],
+            'category_id' => [
+                'required',
+                'integer',
+                Rule::exists('categories', 'id')
+                    ->where('department_id', $this->input('department_id')),
+            ],
             'priority_id' => ['required', 'integer', 'exists:priorities,id'],
             'subject' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
