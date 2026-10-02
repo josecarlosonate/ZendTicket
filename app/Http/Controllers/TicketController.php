@@ -8,6 +8,8 @@ use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\TicketSequence;
 use App\Models\TicketStatus;
+use App\Models\User;
+use App\Http\Requests\AssignTicketRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -77,18 +79,28 @@ class TicketController extends Controller
         }
     }
 
-    public function show(Ticket $ticket)
+    public function show(Request $request, Ticket $ticket)
     {
         Gate::authorize('view', $ticket);
         $ticket->load([
             'requester',
+            'assignee',
             'department',
             'category',
             'priority',
             'status',
         ]);
 
-        return view('tickets.show', compact('ticket'));
+        $agents = collect();
+
+        if ($request->user()->can('tickets.assign')) {
+            $agents = User::active()
+                ->role('agent')
+                ->orderBy('name')
+                ->get();
+        }
+
+        return view('tickets.show', compact('ticket', 'agents'));
     }
 
     public function index(Request $request)
@@ -99,5 +111,18 @@ class TicketController extends Controller
             ->paginate(15);
 
         return view('tickets.index', compact('tickets'));
+    }
+
+    public function assign(AssignTicketRequest $request, Ticket $ticket)
+    {
+        $data = $request->validated();
+
+        $ticket->update([
+            'assigned_to' => $data['agent_id'],
+        ]);
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', 'Agente asignado correctamente.');
     }
 }
