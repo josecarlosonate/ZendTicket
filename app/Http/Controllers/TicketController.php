@@ -66,12 +66,25 @@ class TicketController extends Controller
                 ]);
             });
 
-            return redirect()->route('dashboard')
+            return redirect()->route('tickets.show', $ticket)
                 ->with('success', "Ticket {$ticket->ticket_number} creado correctamente.");
         } catch (\Throwable $exception) {
             report($exception);
             return back()->withInput()
                 ->with('error', 'No fue posible crear el ticket. Inténtalo nuevamente.');
         }
+    }
+
+    public function show(Ticket $ticket)
+    {
+        Gate::authorize('view', $ticket);
+        $ticket->load([
+            'requester',
+            'department',
+            'category',
+            'priority',
+            'status',
+        ]);
+        return view('tickets.show', compact('ticket'));
     }
 }

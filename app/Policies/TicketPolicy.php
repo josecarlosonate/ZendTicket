@@ -20,6 +20,18 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
+        if ($user->can('tickets.view_all')) {
+            return true;
+        }
+
+        if ($user->can('tickets.view_own') && $ticket->requester_id === $user->id) {
+            return true;
+        }
+
+        if ($user->can('tickets.view_assigned') && $ticket->assigned_to === $user->id) {
+            return true;
+        }
+
         return false;
     }
 
