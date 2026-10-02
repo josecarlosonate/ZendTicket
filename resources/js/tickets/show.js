@@ -9,3 +9,15 @@ assignmentButton?.addEventListener('click', () => {
 cancelAssignment?.addEventListener('click', () => {
     assignmentForm?.classList.add('hidden');
 });
+
+const priorityButton = document.getElementById('priorityButton');
+const priorityForm = document.getElementById('priorityForm');
+const cancelPriority = document.getElementById('cancelPriority');
+
+priorityButton?.addEventListener('click', () => {
+    priorityForm?.classList.toggle('hidden');
+});
+
+cancelPriority?.addEventListener('click', () => {
+    priorityForm?.classList.add('hidden');
+});

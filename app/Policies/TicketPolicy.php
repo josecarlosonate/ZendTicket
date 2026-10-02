@@ -74,4 +74,10 @@ class TicketPolicy
     {
         return false;
     }
+
+    public function changePriority(User $user, Ticket $ticket): bool
+    {
+        return $user->can('tickets.change_priority')
+            && in_array($ticket->status->code, ['open', 'in_progress'], true);
+    }
 }

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AssignTicketRequest;
 use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\UpdateTicketPriorityRequest;
 use App\Models\Department;
 use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\TicketSequence;
 use App\Models\TicketStatus;
 use App\Models\User;
-use App\Http\Requests\AssignTicketRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -100,7 +101,15 @@ class TicketController extends Controller
                 ->get();
         }
 
-        return view('tickets.show', compact('ticket', 'agents'));
+        $priorities = collect();
+
+        if ($request->user()->can('changePriority', $ticket)) {
+            $priorities = Priority::where('is_active', true)
+                ->orderBy('level')
+                ->get();
+        }
+
+        return view('tickets.show', compact('ticket', 'agents', 'priorities'));
     }
 
     public function index(Request $request)
@@ -124,5 +133,18 @@ class TicketController extends Controller
         return redirect()
             ->route('tickets.show', $ticket)
             ->with('success', 'Agente asignado correctamente.');
+    }
+
+    public function updatePriority(UpdateTicketPriorityRequest $request, Ticket $ticket)
+    {
+        $data = $request->validated();
+
+        $ticket->update([
+            'priority_id' => $data['priority_id'],
+        ]);
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', 'Prioridad actualizada correctamente.');
     }
 }

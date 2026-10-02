@@ -57,7 +57,7 @@
                 <div class="relative">
                     <button id="assignmentButton" type="button"
                         class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white
-                                text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors">
+                                text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors cursor-pointer">
                         <x-heroicon-o-user-plus class="w-4 h-4" />
                         {{ $ticket->assignee ? 'Reasignar agente' : 'Asignar agente' }}
                     </button>
@@ -108,7 +108,7 @@
 
                             <div class="flex justify-end gap-2 mt-5">
                                 <button id="cancelAssignment" type="button"
-                                    class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-900">
+                                    class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 cursor-pointer">
                                     Cancelar
                                 </button>
 
@@ -149,14 +149,85 @@
                     </p>
                 </div>
 
-                <div>
+                <div class="relative">
                     <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
                         Prioridad
                     </p>
 
-                    <p class="mt-2 text-sm font-medium text-gray-800">
-                        {{ $ticket->priority->name }}
-                    </p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <p class="text-sm font-medium text-gray-800">
+                            {{ $ticket->priority->name }}
+                        </p>
+
+                        @can('changePriority', $ticket)
+                            <button id="priorityButton" type="button"
+                                class="inline-flex items-center justify-center w-7 h-7 rounded-md
+                                bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600
+                                transition-colors cursor-pointer"
+                                title="Cambiar prioridad">
+                                <x-heroicon-o-pencil-square class="w-4 h-4" />
+                            </button>
+                        @endcan
+                    </div>
+
+                    @can('changePriority', $ticket)
+                        <div id="priorityForm" @class([
+                            'absolute left-0 top-full mt-3 z-20 w-72 bg-white border border-gray-200 rounded-xl shadow-lg p-5',
+                            'hidden' => !$errors->has('priority_id'),
+                        ])>
+                            <div class="mb-4">
+                                <h3 class="text-sm font-semibold text-gray-900">
+                                    Cambiar prioridad
+                                </h3>
+
+                                <p class="mt-1 text-xs text-gray-500">
+                                    Selecciona la nueva prioridad del ticket.
+                                </p>
+                            </div>
+
+                            <form action="{{ route('tickets.priority.update', $ticket) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+
+                                <label for="priority_id" class="block mb-2 text-xs font-semibold text-gray-500">
+                                    Prioridad
+                                </label>
+
+                                <select id="priority_id" name="priority_id" @class([
+                                    'w-full rounded-lg text-sm',
+                                    'border-red-300 focus:border-red-500 focus:ring-red-500' => $errors->has(
+                                        'priority_id'),
+                                    'border-gray-300 focus:border-emerald-500 focus:ring-emerald-500' => !$errors->has(
+                                        'priority_id'),
+                                ])>
+                                    @foreach ($priorities as $priority)
+                                        <option value="{{ $priority->id }}" @selected(old('priority_id', $ticket->priority_id) == $priority->id)>
+                                            {{ $priority->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                @error('priority_id')
+                                    <p class="mt-2 text-xs text-red-600">
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+
+                                <div class="flex justify-end gap-2 mt-5">
+                                    <button id="cancelPriority" type="button"
+                                        class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 cursor-pointer">
+                                        Cancelar
+                                    </button>
+
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg
+                                        hover:bg-emerald-700 transition-colors cursor-pointer">
+                                        Actualizar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    @endcan
                 </div>
 
                 <div>
