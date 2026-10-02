@@ -117,7 +117,7 @@ class TicketController extends Controller
         $tickets = Ticket::query()
             ->visibleTo($request->user())->with(['requester', 'department', 'priority', 'status'])
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
         return view('tickets.index', compact('tickets'));
     }
