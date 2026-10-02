@@ -30,16 +30,22 @@
                     Tickets
                 </h1>
                 <p class="mt-2 text-sm text-gray-500 max-w-xl">
-                    Consulta y gestiona las solicitudes disponibles para tu usuario.
+                    @if (auth()->user()->hasRole('customer'))
+                        Consulta el estado de las solicitudes que has enviado.
+                    @else
+                        Consulta y gestiona las solicitudes disponibles para tu usuario.
+                    @endif
                 </p>
             </div>
 
             <div class="flex flex-wrap items-center gap-3">
-                <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-gray-200 text-sm text-gray-600">
-                    <x-heroicon-o-ticket class="w-4 h-4 text-[#10b981]" />
-                    <span class="font-semibold text-gray-900">{{ $tickets->total() }}</span>
-                    <span>{{ $tickets->total() === 1 ? 'solicitud' : 'solicitudes' }}</span>
-                </div>
+                @unless (auth()->user()->hasRole('customer'))
+                    <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-gray-200 text-sm text-gray-600">
+                        <x-heroicon-o-ticket class="w-4 h-4 text-[#10b981]" />
+                        <span class="font-semibold text-gray-900">{{ $tickets->total() }}</span>
+                        <span>{{ $tickets->total() === 1 ? 'solicitud' : 'solicitudes' }}</span>
+                    </div>
+                @endunless
 
                 @can('create', App\Models\Ticket::class)
                     <a href="{{ route('tickets.create') }}"
