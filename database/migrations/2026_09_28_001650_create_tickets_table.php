@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('status_id')->constrained('ticket_statuses')->restrictOnDelete();
             $table->string('subject', 200);
             $table->text('description');
+            $table->timestamp('assigned_at')->nullable();
             $table->timestamp('first_responded_at')->nullable();
             $table->timestamp('resolved_at')->nullable();
             $table->timestamp('closed_at')->nullable();

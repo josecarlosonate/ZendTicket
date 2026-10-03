@@ -14,8 +14,7 @@
         @endif
 
         @if (session('error'))
-            <div
-                class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-sm text-red-700">
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-sm text-red-700">
                 <x-heroicon-o-exclamation-circle class="w-5 h-5 shrink-0 text-red-500" />
                 <span>{{ session('error') }}</span>
             </div>
@@ -40,7 +39,8 @@
 
             <div class="flex flex-wrap items-center gap-3">
                 @unless (auth()->user()->hasRole('customer'))
-                    <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-gray-200 text-sm text-gray-600">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-gray-200 text-sm text-gray-600">
                         <x-heroicon-o-ticket class="w-4 h-4 text-[#10b981]" />
                         <span class="font-semibold text-gray-900">{{ $tickets->total() }}</span>
                         <span>{{ $tickets->total() === 1 ? 'solicitud' : 'solicitudes' }}</span>
@@ -96,7 +96,8 @@
 
                         <div class="mt-3 flex items-center justify-between gap-3 text-xs text-gray-500">
                             <span class="truncate">{{ $ticket->department->name }}</span>
-                            <time datetime="{{ $ticket->created_at->toIso8601String() }}" title="{{ $ticket->created_at->format('d/m/Y H:i') }}">
+                            <time datetime="{{ $ticket->created_at->toIso8601String() }}"
+                                title="{{ $ticket->created_at->format('d/m/Y H:i') }}">
                                 {{ $ticket->created_at->format('d/m/Y') }}
                             </time>
                         </div>
@@ -113,10 +114,13 @@
                         <tr>
                             <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Ticket</th>
                             @canany(['tickets.view_assigned', 'tickets.view_all'])
-                                <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Solicitante</th>
+                                <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Solicitante
+                                </th>
                             @endcanany
-                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Departamento</th>
-                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Prioridad</th>
+                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Departamento
+                            </th>
+                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Prioridad
+                            </th>
                             <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Estado</th>
                             <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Fecha</th>
                             <th class="px-6 py-3"><span class="sr-only">Acciones</span></th>
@@ -139,11 +143,7 @@
 
                                 @canany(['tickets.view_assigned', 'tickets.view_all'])
                                     <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2.5 min-w-40">
-                                            <span
-                                                class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-[11px] font-bold text-gray-600 shrink-0">
-                                                {{ strtoupper(mb_substr($ticket->requester->name, 0, 1)) }}
-                                            </span>
+                                        <div class="flex items-center min-w-40">
                                             <span class="text-sm text-gray-700 truncate">
                                                 {{ $ticket->requester->name }}
                                             </span>
@@ -159,11 +159,15 @@
                                 </td>
 
                                 <td class="px-6 py-4">
-                                    @include('tickets.partials.priority-badge', ['priority' => $ticket->priority])
+                                    @include('tickets.partials.priority-badge', [
+                                        'priority' => $ticket->priority,
+                                    ])
                                 </td>
 
                                 <td class="px-6 py-4">
-                                    @include('tickets.partials.status-badge', ['status' => $ticket->status])
+                                    @include('tickets.partials.status-badge', [
+                                        'status' => $ticket->status,
+                                    ])
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap">

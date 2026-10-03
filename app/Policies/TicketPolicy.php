@@ -80,4 +80,27 @@ class TicketPolicy
         return $user->can('tickets.change_priority')
             && in_array($ticket->status->code, ['open', 'in_progress'], true);
     }
+
+    public function resolve(User $user, Ticket $ticket): bool
+    {
+        if (! $user->can('tickets.resolve')) {
+            return false;
+        }
+
+        if ($user->hasRole('agent')) {
+            return $ticket->assigned_to === $user->id;
+        }
+
+        return true;
+    }
+
+    public function reopen(User $user, Ticket $ticket): bool
+    {
+        return $user->can('tickets.reopen');
+    }
+
+    public function close(User $user, Ticket $ticket): bool
+    {
+        return $user->can('tickets.close');
+    }
 }

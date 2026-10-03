@@ -20,6 +20,7 @@ class Ticket extends Model
         'subject',
         'description',
         'first_responded_at',
+        'assigned_at',
         'resolved_at',
         'closed_at',
         'due_at',
@@ -29,6 +30,7 @@ class Ticket extends Model
     {
         return [
             'first_responded_at' => 'datetime',
+            'assigned_at' => 'datetime',
             'resolved_at' => 'datetime',
             'closed_at' => 'datetime',
             'due_at' => 'datetime',

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Tickets\RecordTicketActivityAction;
+use App\Actions\Tickets\TransitionTicketStatusAction;
 use App\Http\Requests\AssignTicketRequest;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketPriorityRequest;
@@ -94,7 +96,10 @@ class TicketController extends Controller
 
         $agents = collect();
 
-        if ($request->user()->can('tickets.assign')) {
+        if (
+            $request->user()->can('tickets.assign')
+            && in_array($ticket->status->code, ['open', 'in_progress'], true)
+        ) {
             $agents = User::active()
                 ->role('agent')
                 ->orderBy('name')
@@ -122,13 +127,40 @@ class TicketController extends Controller
         return view('tickets.index', compact('tickets'));
     }
 
-    public function assign(AssignTicketRequest $request, Ticket $ticket)
-    {
+    public function assign(
+        AssignTicketRequest $request,
+        Ticket $ticket,
+        TransitionTicketStatusAction $action,
+        RecordTicketActivityAction $actionActivity
+    ) {
         $data = $request->validated();
 
-        $ticket->update([
-            'assigned_to' => $data['agent_id'],
-        ]);
+        DB::transaction(function () use ($data, $ticket, $request, $action, $actionActivity) {
+
+            $previousAgentId = $ticket->assigned_to;
+            $previousStatus = $ticket->status->code;
+
+            $ticket->update([
+                'assigned_to' => $data['agent_id'],
+            ]);
+
+            $action->execute($ticket, 'assign');
+            $ticket->load('status');
+
+            $actionActivity->execute(
+                $ticket,
+                $request->user(),
+                is_null($previousAgentId) ? 'assigned' : 'reassigned',
+                [
+                    'assigned_to' => $previousAgentId,
+                    'status' => $previousStatus,
+                ],
+                [
+                    'assigned_to' => (int) $data['agent_id'],
+                    'status' => $ticket->status->code,
+                ],
+            );
+        });
 
         return redirect()
             ->route('tickets.show', $ticket)
@@ -146,5 +178,93 @@ class TicketController extends Controller
         return redirect()
             ->route('tickets.show', $ticket)
             ->with('success', 'Prioridad actualizada correctamente.');
+    }
+
+    public function resolve(
+        Request $request,
+        Ticket $ticket,
+        TransitionTicketStatusAction $action,
+        RecordTicketActivityAction $actionActivity
+    ) {
+        Gate::authorize('resolve', $ticket);
+
+        DB::transaction(function () use ($ticket, $request, $action, $actionActivity) {
+
+            $previousStatus = $ticket->status->code;
+
+            $action->execute($ticket, 'resolve');
+
+            $ticket->load('status');
+
+            $actionActivity->execute(
+                $ticket,
+                $request->user(),
+                'resolved',
+                ['status' => $previousStatus],
+                ['status' => $ticket->status->code],
+            );
+        });
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', 'Ticket marcado como resuelto.');
+    }
+
+    public function close(
+        Request $request,
+        Ticket $ticket,
+        TransitionTicketStatusAction $action,
+        RecordTicketActivityAction $actionActivity
+    ) {
+        Gate::authorize('close', $ticket);
+
+        DB::transaction(function () use ($ticket, $request, $action, $actionActivity) {
+            $previousStatus = $ticket->status->code;
+
+            $action->execute($ticket, 'close');
+
+            $ticket->load('status');
+
+            $actionActivity->execute(
+                $ticket,
+                $request->user(),
+                'closed',
+                ['status' => $previousStatus],
+                ['status' => $ticket->status->code],
+            );
+        });
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', 'Ticket cerrado correctamente.');
+    }
+
+    public function reopen(
+        Request $request,
+        Ticket $ticket,
+        TransitionTicketStatusAction $action,
+        RecordTicketActivityAction $actionActivity
+    ) {
+        Gate::authorize('reopen', $ticket);
+
+        DB::transaction(function () use ($ticket, $request, $action, $actionActivity) {
+            $previousStatus = $ticket->status->code;
+
+            $action->execute($ticket, 'reopen');
+
+            $ticket->load('status');
+
+            $actionActivity->execute(
+                $ticket,
+                $request->user(),
+                'reopened',
+                ['status' => $previousStatus],
+                ['status' => $ticket->status->code],
+            );
+        });
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', 'Ticket reabierto correctamente.');
     }
 }

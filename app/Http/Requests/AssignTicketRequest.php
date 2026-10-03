@@ -38,11 +38,21 @@ class AssignTicketRequest extends FormRequest
                 }
 
                 $agent = User::find($this->integer('agent_id'));
+                $ticket = $this->route('ticket');
 
                 if (! $agent?->is_active || ! $agent->hasRole('agent')) {
                     $validator->errors()->add(
                         'agent_id',
                         'El usuario seleccionado no es un agente activo.'
+                    );
+
+                    return;
+                }
+
+                if ($ticket->assigned_to === $agent->id) {
+                    $validator->errors()->add(
+                        'agent_id',
+                        'El ticket ya está asignado a este agente.'
                     );
                 }
             },
