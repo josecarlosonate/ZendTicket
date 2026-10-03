@@ -1,9 +1,6 @@
 <?php
 
 use App\Actions\Tickets\TransitionTicketStatusAction;
-use App\Models\Category;
-use App\Models\Department;
-use App\Models\Priority;
 use App\Models\Ticket;
 use App\Models\TicketStatus;
 use App\Models\User;
@@ -15,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(RolesAndPermissionsSeeder::class);
+    app(RolesAndPermissionsSeeder::class)->run();
 
     DB::table('departments')->insert([
         'id' => 1,
@@ -167,7 +164,6 @@ test('la reasignación mantiene assigned_at y registra reassigned', function () 
 });
 
 test('assign rechaza tickets resolved y closed', function (string $status) {
-    $agent = workflowUser('agent');
     $ticket = workflowTicket($status);
 
     expect(fn () => app(TransitionTicketStatusAction::class)->execute($ticket, 'assign'))
