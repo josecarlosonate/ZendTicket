@@ -154,6 +154,21 @@
                     @endcan
                 @endif
 
+                @if ($ticket->status->code === 'resolved')
+                    @can('reopen', $ticket)
+                        <form action="{{ route('tickets.reopen', $ticket) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 text-sm font-semibold rounded-xl border border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer shadow-sm">
+                                <x-heroicon-o-arrow-path class="w-4 h-4" />
+                                Reabrir
+                            </button>
+                        </form>
+                    @endcan
+                @endif
+
             </div>
 
         </header>
