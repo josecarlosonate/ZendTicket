@@ -75,67 +75,84 @@
                     @endcan
                 @endif
 
-                @can('tickets.assign')
-                    <div class="relative shrink-0">
-                        <button id="assignmentButton" type="button"
-                            class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
-                            <x-heroicon-o-user-plus class="w-4 h-4" />
-                            {{ $ticket->assignee ? 'Reasignar agente' : 'Asignar agente' }}
-                        </button>
+                @if (in_array($ticket->status->code, ['open', 'in_progress'], true))
+                    @can('tickets.assign')
+                        <div class="relative shrink-0">
+                            <button id="assignmentButton" type="button"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
+                                <x-heroicon-o-user-plus class="w-4 h-4" />
+                                {{ $ticket->assignee ? 'Reasignar agente' : 'Asignar agente' }}
+                            </button>
 
-                        <div id="assignmentForm" @class([
-                            'absolute right-0 top-full mt-3 z-50 w-80 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-xl p-5',
-                            'hidden' => !$errors->has('agent_id'),
-                        ])>
-                            <div class="mb-4">
-                                <h3 class="text-sm font-semibold text-gray-900">
-                                    {{ $ticket->assignee ? 'Reasignar agente' : 'Asignar agente' }}
-                                </h3>
-                                <p class="mt-1 text-xs text-gray-500">
-                                    Selecciona el agente responsable del ticket.
-                                </p>
-                            </div>
-
-                            <form action="{{ route('tickets.assign', $ticket) }}" method="POST">
-                                @csrf
-                                @method('PATCH')
-
-                                <label for="agent_id"
-                                    class="block mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">
-                                    Agente
-                                </label>
-
-                                <select id="agent_id" name="agent_id" @class([
-                                    'w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:bg-white transition-all cursor-pointer',
-                                    'border-red-300 focus:border-red-500' => $errors->has('agent_id'),
-                                    'border-gray-200 focus:border-[#10b981]' => !$errors->has('agent_id'),
-                                ])>
-                                    <option value="">Selecciona un agente</option>
-                                    @foreach ($agents as $agent)
-                                        <option value="{{ $agent->id }}" @selected(old('agent_id', $ticket->assigned_to) == $agent->id)>
-                                            {{ $agent->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-
-                                @error('agent_id')
-                                    <p class="mt-2 text-xs font-semibold text-red-500">{{ $message }}</p>
-                                @enderror
-
-                                <div class="flex justify-end gap-2 mt-5">
-                                    <button id="cancelAssignment" type="button"
-                                        class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 cursor-pointer">
-                                        Cancelar
-                                    </button>
-                                    <button type="submit"
-                                        class="px-4 py-2 bg-[#22c55e] text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-100 hover:bg-[#16a34a] transition-all cursor-pointer">
-                                        Asignar
-                                    </button>
+                            <div id="assignmentForm" @class([
+                                'absolute right-0 top-full mt-3 z-50 w-80 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-xl p-5',
+                                'hidden' => !$errors->has('agent_id'),
+                            ])>
+                                <div class="mb-4">
+                                    <h3 class="text-sm font-semibold text-gray-900">
+                                        {{ $ticket->assignee ? 'Reasignar agente' : 'Asignar agente' }}
+                                    </h3>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        Selecciona el agente responsable del ticket.
+                                    </p>
                                 </div>
-                            </form>
+
+                                <form action="{{ route('tickets.assign', $ticket) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <label for="agent_id"
+                                        class="block mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">
+                                        Agente
+                                    </label>
+
+                                    <select id="agent_id" name="agent_id" @class([
+                                        'w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:bg-white transition-all cursor-pointer',
+                                        'border-red-300 focus:border-red-500' => $errors->has('agent_id'),
+                                        'border-gray-200 focus:border-[#10b981]' => !$errors->has('agent_id'),
+                                    ])>
+                                        <option value="">Selecciona un agente</option>
+                                        @foreach ($agents as $agent)
+                                            <option value="{{ $agent->id }}" @selected(old('agent_id', $ticket->assigned_to) == $agent->id)>
+                                                {{ $agent->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    @error('agent_id')
+                                        <p class="mt-2 text-xs font-semibold text-red-500">{{ $message }}</p>
+                                    @enderror
+
+                                    <div class="flex justify-end gap-2 mt-5">
+                                        <button id="cancelAssignment" type="button"
+                                            class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 cursor-pointer">
+                                            Cancelar
+                                        </button>
+                                        <button type="submit"
+                                            class="px-4 py-2 bg-[#22c55e] text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-100 hover:bg-[#16a34a] transition-all cursor-pointer">
+                                            Asignar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                @endcan
+                    @endcan
+                @endif
+
+                @if ($ticket->status->code === 'resolved')
+                    @can('close', $ticket)
+                        <form action="{{ route('tickets.close', $ticket) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
+                                <x-heroicon-o-lock-closed class="w-4 h-4" />
+                                Cerrar ticket
+                            </button>
+                        </form>
+                    @endcan
+                @endif
 
             </div>
 

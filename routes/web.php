@@ -20,9 +20,6 @@ Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])-
 Route::post('/reset-password', [NewPasswordController::class, 'store'])->middleware('guest')->name('password.update');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
 
     Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
     Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
@@ -31,6 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/tickets/{ticket}/assignment', [TicketController::class, 'assign'])->name('tickets.assign');
     Route::patch('/tickets/{ticket}/priority', [TicketController::class, 'updatePriority'])->name('tickets.priority.update');
     Route::patch('/tickets/{ticket}/resolve', [TicketController::class, 'resolve'])->name('tickets.resolve');
+    Route::patch('/tickets/{ticket}/close', [TicketController::class, 'close'])->name('tickets.close');
 
     Route::get('/departments/{department}/categories', [TicketController::class, 'categories'])->name('departments.categories');
+
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 });

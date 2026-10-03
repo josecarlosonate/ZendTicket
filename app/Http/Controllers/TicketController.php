@@ -206,4 +206,33 @@ class TicketController extends Controller
             ->route('tickets.show', $ticket)
             ->with('success', 'Ticket marcado como resuelto.');
     }
+
+    public function close(
+        Request $request,
+        Ticket $ticket,
+        TransitionTicketStatusAction $action,
+        RecordTicketActivityAction $actionActivity
+    ) {
+        Gate::authorize('close', $ticket);
+
+        DB::transaction(function () use ($ticket, $request, $action, $actionActivity) {
+            $previousStatus = $ticket->status->code;
+
+            $action->execute($ticket, 'close');
+
+            $ticket->load('status');
+
+            $actionActivity->execute(
+                $ticket,
+                $request->user(),
+                'closed',
+                ['status' => $previousStatus],
+                ['status' => $ticket->status->code],
+            );
+        });
+
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('success', 'Ticket cerrado correctamente.');
+    }
 }
