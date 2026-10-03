@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::patch('/tickets/{ticket}/assignment', [TicketController::class, 'assign'])->name('tickets.assign');
     Route::patch('/tickets/{ticket}/priority', [TicketController::class, 'updatePriority'])->name('tickets.priority.update');
+    Route::patch('/tickets/{ticket}/resolve', [TicketController::class, 'resolve'])->name('tickets.resolve');
 
     Route::get('/departments/{department}/categories', [TicketController::class, 'categories'])->name('departments.categories');
 });
