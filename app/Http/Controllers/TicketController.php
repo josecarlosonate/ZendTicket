@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Tickets\TransitionTicketStatusAction;
 use App\Http\Requests\AssignTicketRequest;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketPriorityRequest;
@@ -122,13 +123,17 @@ class TicketController extends Controller
         return view('tickets.index', compact('tickets'));
     }
 
-    public function assign(AssignTicketRequest $request, Ticket $ticket)
+    public function assign(AssignTicketRequest $request, Ticket $ticket, TransitionTicketStatusAction $action)
     {
         $data = $request->validated();
 
-        $ticket->update([
-            'assigned_to' => $data['agent_id'],
-        ]);
+        DB::transaction(function () use ($data, $ticket, $action) {
+            $ticket->update([
+                'assigned_to' => $data['agent_id'],
+            ]);
+
+            $action->execute($ticket, 'assign');
+        });
 
         return redirect()
             ->route('tickets.show', $ticket)

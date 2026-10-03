@@ -133,7 +133,7 @@
                     </a>
                     <button type="submit"
                         class="px-6 py-3 rounded-xl bg-[#22c55e] text-white font-bold text-xs shadow-lg shadow-emerald-100
-                         hover:bg-[#16a34a] hover:shadow-none transition-all uppercase tracking-wider">
+                         hover:bg-[#16a34a] hover:shadow-none transition-all uppercase tracking-wider cursor-pointer">
                         Crear ticket
                     </button>
                 </div>
