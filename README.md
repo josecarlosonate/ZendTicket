@@ -130,7 +130,6 @@ Reglas actuales:
 - **PHP 8.3+**
 - **Laravel 13**
 - **Eloquent ORM**
-- **Blade**
 - **Spatie Laravel Permission**
 
 ### Frontend
@@ -336,6 +335,25 @@ resolved
 closed
 ```
 
+### Usuarios de prueba
+
+`UsersSeeder` carga los siguientes usuarios. Todos utilizan la contraseña:
+
+```text
+password
+```
+
+| Rol | Nombre | Email |
+| --- | --- | --- |
+| Customer | Cliente Uno | `cliente1@zendticket.test` |
+| Customer | Cliente Dos | `cliente2@zendticket.test` |
+| Customer | Cliente Tres | `cliente3@zendticket.test` |
+| Agent | Agente Uno | `agente1@zendticket.test` |
+| Agent | Agente Dos | `agente2@zendticket.test` |
+| Supervisor | Supervisor | `supervisor@zendticket.test` |
+
+El usuario **Admin** no tiene credenciales fijas en el repositorio. Se crea mediante `AdminUserSeeder` utilizando las variables `ZENDTICKET_ADMIN_NAME`, `ZENDTICKET_ADMIN_EMAIL` y `ZENDTICKET_ADMIN_PASSWORD` configuradas en `.env`.
+
 ---
 
 ## Cómo ejecutar el proyecto
@@ -376,7 +394,9 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-5. Configura la conexión MySQL en `.env`.
+5. Configura la conexión MySQL y las credenciales del administrador en `.env`.
+
+Para probar el flujo de recuperación de contraseña con envío real de correo, configura también las variables `MAIL_*` para tu servicio SMTP. Si mantienes `MAIL_MAILER=log`, Laravel escribirá los correos en el log en lugar de enviarlos mediante SMTP.
 
 6. Ejecuta migraciones y seeders:
 
