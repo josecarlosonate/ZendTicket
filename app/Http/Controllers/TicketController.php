@@ -96,7 +96,10 @@ class TicketController extends Controller
 
         $agents = collect();
 
-        if ($request->user()->can('tickets.assign')) {
+        if (
+            $request->user()->can('tickets.assign')
+            && in_array($ticket->status->code, ['open', 'in_progress'], true)
+        ) {
             $agents = User::active()
                 ->role('agent')
                 ->orderBy('name')
