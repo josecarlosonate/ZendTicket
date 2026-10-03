@@ -13,10 +13,12 @@ test('un usuario puede pertenecer a varios departamentos', function () {
     ]);
 
     $support = Department::create([
+        'code' => 'technical_support',
         'name' => 'Soporte técnico',
     ]);
 
     $billing = Department::create([
+        'code' => 'billing',
         'name' => 'Facturación',
     ]);
 
