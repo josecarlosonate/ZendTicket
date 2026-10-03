@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Tickets\RecordTicketActivityAction;
 use App\Actions\Tickets\TransitionTicketStatusAction;
 use App\Http\Requests\AssignTicketRequest;
 use App\Http\Requests\StoreTicketRequest;
@@ -123,16 +124,39 @@ class TicketController extends Controller
         return view('tickets.index', compact('tickets'));
     }
 
-    public function assign(AssignTicketRequest $request, Ticket $ticket, TransitionTicketStatusAction $action)
-    {
+    public function assign(
+        AssignTicketRequest $request,
+        Ticket $ticket,
+        TransitionTicketStatusAction $action,
+        RecordTicketActivityAction $actionActivity
+    ) {
         $data = $request->validated();
 
-        DB::transaction(function () use ($data, $ticket, $action) {
+        DB::transaction(function () use ($data, $ticket, $request, $action, $actionActivity) {
+
+            $previousAgentId = $ticket->assigned_to;
+            $previousStatus = $ticket->status->code;
+
             $ticket->update([
                 'assigned_to' => $data['agent_id'],
             ]);
 
             $action->execute($ticket, 'assign');
+            $ticket->load('status');
+
+            $actionActivity->execute(
+                $ticket,
+                $request->user(),
+                is_null($previousAgentId) ? 'assigned' : 'reassigned',
+                [
+                    'assigned_to' => $previousAgentId,
+                    'status' => $previousStatus,
+                ],
+                [
+                    'assigned_to' => (int) $data['agent_id'],
+                    'status' => $ticket->status->code,
+                ],
+            );
         });
 
         return redirect()

@@ -9,7 +9,12 @@ class TicketActivity extends Model
 {
     public const UPDATED_AT = null;
 
-    protected $guarded = ['*'];
+    protected $fillable = [
+        'user_id',
+        'action',
+        'old_values',
+        'new_values',
+    ];
 
     protected function casts(): array
     {
