@@ -76,6 +76,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'tickets.reopen',
                 'tickets.change_priority',
                 'tickets.close',
+                'comments.create',
+                'comments.create_internal',
                 'catalogs.manage',
                 'users.manage',
                 'roles.manage',

@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class TicketComment extends Model
 {
     protected $fillable = [
+        'user_id',
         'body',
+        'is_internal',
     ];
 
     protected function casts(): array
