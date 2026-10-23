@@ -25,7 +25,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'tickets.change_priority',
             'tickets.close',
 
-            'comments.create',
             'comments.create_internal',
 
             'attachments.create',
@@ -40,7 +39,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'customer' => [
                 'tickets.create',
                 'tickets.view_own',
-                'comments.create',
                 'attachments.create',
             ],
 
@@ -48,7 +46,6 @@ class RolesAndPermissionsSeeder extends Seeder
                 'tickets.view_assigned',
                 'tickets.update',
                 'tickets.resolve',
-                'comments.create',
                 'comments.create_internal',
                 'attachments.create',
             ],
@@ -62,7 +59,6 @@ class RolesAndPermissionsSeeder extends Seeder
                 'tickets.reopen',
                 'tickets.change_priority',
                 'tickets.close',
-                'comments.create',
                 'comments.create_internal',
                 'attachments.create',
                 'reports.view',
@@ -76,6 +72,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'tickets.reopen',
                 'tickets.change_priority',
                 'tickets.close',
+                'comments.create_internal',
                 'catalogs.manage',
                 'users.manage',
                 'roles.manage',

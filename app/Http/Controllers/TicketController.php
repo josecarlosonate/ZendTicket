@@ -106,6 +106,16 @@ class TicketController extends Controller
                 ->get();
         }
 
+        $comments = collect();
+
+        if ($request->user()->can('comments.create_internal')) {
+            $comments = $ticket->comments()
+                ->with('user')
+                ->where('is_internal', true)
+                ->oldest()
+                ->get();
+        }
+
         $priorities = collect();
 
         if ($request->user()->can('changePriority', $ticket)) {
@@ -114,7 +124,7 @@ class TicketController extends Controller
                 ->get();
         }
 
-        return view('tickets.show', compact('ticket', 'agents', 'priorities'));
+        return view('tickets.show', compact('ticket', 'agents', 'priorities', 'comments'));
     }
 
     public function index(Request $request)
