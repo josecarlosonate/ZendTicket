@@ -40,7 +40,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'customer' => [
                 'tickets.create',
                 'tickets.view_own',
-                'comments.create',
                 'attachments.create',
             ],
 
