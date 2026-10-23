@@ -338,7 +338,7 @@
                 @endif
 
                 <div class="mt-6 pt-6 border-t border-gray-100">
-                    <div class="flex justify-end">
+                    <div id="internalNoteButtonContainer" class="flex justify-end">
                         <button id="internalNoteButton" type="button"
                             class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
                             <x-heroicon-o-plus class="w-4 h-4" />
