@@ -21,3 +21,19 @@ priorityButton?.addEventListener('click', () => {
 cancelPriority?.addEventListener('click', () => {
     priorityForm?.classList.add('hidden');
 });
+
+const internalNoteButton = document.getElementById('internalNoteButton');
+const internalNoteForm = document.getElementById('internalNoteForm');
+const cancelInternalNote = document.getElementById('cancelInternalNote');
+const internalNoteBody = document.getElementById('body');
+
+internalNoteButton?.addEventListener('click', () => {
+    internalNoteForm?.classList.remove('hidden');
+    internalNoteButton.classList.add('hidden');
+    internalNoteBody?.focus();
+});
+
+cancelInternalNote?.addEventListener('click', () => {
+    internalNoteForm?.classList.add('hidden');
+    internalNoteButton?.classList.remove('hidden');
+});
