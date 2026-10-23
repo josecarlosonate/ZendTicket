@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
 
 class StoreTicketCommentRequest extends FormRequest
 {
@@ -16,7 +15,7 @@ class StoreTicketCommentRequest extends FormRequest
         $ticket = $this->route('ticket');
         $user = $this->user();
 
-        return $user->can('comments.create')
+        return $user->can('comments.create_internal')
             && $user->can('view', $ticket);
     }
 
@@ -29,24 +28,6 @@ class StoreTicketCommentRequest extends FormRequest
     {
         return [
             'body' => ['required', 'string', 'max:5000'],
-            'is_internal' => ['sometimes', 'boolean'],
-        ];
-    }
-
-    public function after(): array
-    {
-        return [
-            function (Validator $validator) {
-                if (
-                    $this->boolean('is_internal')
-                    && ! $this->user()->can('comments.create_internal')
-                ) {
-                    $validator->errors()->add(
-                        'is_internal',
-                        'No tienes permiso para crear notas internas.'
-                    );
-                }
-            },
         ];
     }
 }
