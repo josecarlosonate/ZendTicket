@@ -337,34 +337,59 @@
                     </div>
                 @endif
 
-                <form action="{{ route('tickets.comments.store', $ticket) }}" method="POST"
-                    class="mt-6 pt-6 border-t border-gray-100">
-                    @csrf
-
-                    <label for="body" class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
-                        Nueva nota
-                    </label>
-
-                    <textarea id="body" name="body" rows="4"
-                        placeholder="Escribe una nota interna sobre la gestión de este ticket..."
-                        @class([
-                            'w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm text-gray-700 resize-y focus:outline-none focus:bg-white transition-all',
-                            'border-red-300 focus:border-red-500' => $errors->has('body'),
-                            'border-gray-200 focus:border-[#10b981]' => !$errors->has('body'),
-                        ])>{{ old('body') }}</textarea>
-
-                    @error('body')
-                        <p class="mt-2 text-xs font-semibold text-red-500">{{ $message }}</p>
-                    @enderror
-
-                    <div class="mt-4 flex justify-end">
-                        <button type="submit"
+                <div class="mt-6 pt-6 border-t border-gray-100">
+                    <div class="flex justify-end">
+                        <button id="internalNoteButton" type="button"
                             class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
                             <x-heroicon-o-plus class="w-4 h-4" />
                             Agregar nota
                         </button>
                     </div>
-                </form>
+
+                    <form id="internalNoteForm" action="{{ route('tickets.comments.store', $ticket) }}" method="POST"
+                        @class([
+                            'mt-4 rounded-2xl border border-gray-200 bg-gray-50 p-5',
+                            'hidden' => !$errors->has('body'),
+                        ])>
+                        @csrf
+
+                        <div class="mb-4">
+                            <h3 class="text-sm font-semibold text-gray-900">Nueva nota interna</h3>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Esta información solo será visible para el equipo de soporte.
+                            </p>
+                        </div>
+
+                        <label for="body" class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                            Nota
+                        </label>
+
+                        <textarea id="body" name="body" rows="4"
+                            placeholder="Escribe una nota interna sobre la gestión de este ticket..."
+                            @class([
+                                'w-full bg-white border rounded-xl px-4 py-3 text-sm text-gray-700 resize-y focus:outline-none transition-all',
+                                'border-red-300 focus:border-red-500' => $errors->has('body'),
+                                'border-gray-200 focus:border-[#10b981]' => !$errors->has('body'),
+                            ])>{{ old('body') }}</textarea>
+
+                        @error('body')
+                            <p class="mt-2 text-xs font-semibold text-red-500">{{ $message }}</p>
+                        @enderror
+
+                        <div class="mt-4 flex justify-end gap-2">
+                            <button id="cancelInternalNote" type="button"
+                                class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-900 cursor-pointer">
+                                Cancelar
+                            </button>
+
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
+                                <x-heroicon-o-check class="w-4 h-4" />
+                                Guardar nota
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </section>
         @endcan
     </div>
