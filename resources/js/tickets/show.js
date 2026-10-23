@@ -23,17 +23,18 @@ cancelPriority?.addEventListener('click', () => {
 });
 
 const internalNoteButton = document.getElementById('internalNoteButton');
+const internalNoteButtonContainer = document.getElementById('internalNoteButtonContainer');
 const internalNoteForm = document.getElementById('internalNoteForm');
 const cancelInternalNote = document.getElementById('cancelInternalNote');
 const internalNoteBody = document.getElementById('body');
 
 internalNoteButton?.addEventListener('click', () => {
     internalNoteForm?.classList.remove('hidden');
-    internalNoteButton.classList.add('hidden');
+    internalNoteButtonContainer?.classList.add('hidden');
     internalNoteBody?.focus();
 });
 
 cancelInternalNote?.addEventListener('click', () => {
     internalNoteForm?.classList.add('hidden');
-    internalNoteButton?.classList.remove('hidden');
+    internalNoteButtonContainer?.classList.remove('hidden');
 });
