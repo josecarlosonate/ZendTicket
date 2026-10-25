@@ -7,7 +7,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Attachment extends Model
 {
-    protected $guarded = ['*'];
+    protected $fillable = [
+        'ticket_comment_id',
+        'user_id',
+        'disk',
+        'path',
+        'original_name',
+        'mime_type',
+        'size',
+    ];
 
     protected function casts(): array
     {
