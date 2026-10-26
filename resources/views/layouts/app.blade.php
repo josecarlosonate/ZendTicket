@@ -25,7 +25,7 @@
 
     <!-- 1. Barra Lateral de Navegación (Sidebar Sticky) -->
     <aside
-        class="w-20 bg-white border-r border-gray-100 flex flex-col items-center py-6 justify-between shrink-0 md:flex h-screen sticky top-0 z-40">
+        class="w-20 bg-emerald-700 border-r border-emerald-800/30 flex flex-col items-center py-6 justify-between shrink-0 md:flex h-screen sticky top-0 z-40">
         <div class="flex flex-col items-center gap-8 w-full">
             <!-- Isotipo ZendTicket -->
             <a href="/">
@@ -44,16 +44,16 @@
                 <a href="{{ route('dashboard') }}"
                     class="p-3 rounded-xl flex justify-center transition-all 
                     {{ request()->routeIs('dashboard')
-                        ? 'bg-emerald-50 text-[#10b981] shadow-sm'
-                        : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50' }}"
+                        ? 'bg-white text-emerald-800 shadow-md shadow-emerald-950/10'
+                        : 'text-emerald-100/75 hover:text-white hover:bg-white/10' }}"
                     title="Panel Principal">
                     <x-heroicon-o-squares-2x2 class="w-5 h-5" />
                 </a>
                 <a href="{{ route('tickets.index') }}"
                     class="p-3 rounded-xl flex justify-center transition-all 
                     {{ request()->routeIs('tickets.*')
-                        ? 'bg-emerald-50 text-[#10b981] shadow-sm'
-                        : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50' }}"
+                        ? 'bg-white text-emerald-800 shadow-md shadow-emerald-950/10'
+                        : 'text-emerald-100/75 hover:text-white hover:bg-white/10' }}"
                     title="Modulo Tickets">
                     <x-heroicon-o-ticket class="w-5 h-5" />
                 </a>
@@ -66,17 +66,11 @@
     <div class="grow flex flex-col min-w-0 min-h-screen">
 
         <!-- 2. Barra Superior (Navbar Global) -->
-        <header class="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-6 shrink-0">
+        <header class="h-20 bg-white/90 backdrop-blur border-b border-emerald-100/80 flex items-center justify-between px-6 shrink-0">
             <div class="flex items-center gap-4 grow max-w-xl">
-                <!-- Buscador Central Integrado -->
-                <div class="relative w-full">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                        <x-heroicon-o-magnifying-glass class="w-4 h-4" />
-                    </span>
-                    <input type="text" placeholder="Buscar usuarios, tickets, solicitudes..."
-                        class="w-full bg-slate-50 border border-gray-200 rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-[#10b981] 
-                        focus:bg-white transition-all">
-                </div>
+                @unless (Auth::user()->hasRole('customer'))
+                    <!-- La búsqueda global se habilitará cuando exista funcionalidad real para los perfiles internos. -->
+                @endunless
             </div>
 
             <!-- Información y Nombre del Usuario -->
@@ -92,10 +86,10 @@
 
                 <div class="relative">
                     <button id="layoutUserMenuBtn"
-                        class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 border border-gray-100 block focus:outline-none focus:ring-2 focus:ring-offset-2 
-                        focus:ring-[#10b981] transition-all cursor-pointer">
-                        <img src="https://rickandmortyapi.com/api/character/avatar/4.jpeg" alt="User Profile"
-                            class="w-full h-full object-cover">
+                        class="w-9 h-9 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-xs font-bold text-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 
+                        focus:ring-[#10b981] transition-all cursor-pointer"
+                        aria-label="Abrir menú de usuario">
+                        {{ strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}
                     </button>
 
                     <!-- Tarjeta Desplegable Flotante (Alineada a la derecha de la foto) -->
@@ -131,7 +125,7 @@
         </header>
 
         <!-- 3. Contenedor de Inyección Dinámica de Contenido -->
-        <div class="grow overflow-y-auto">
+        <div class="grow overflow-y-auto bg-[#f3f8f5]">
             @yield('content')
         </div>
 

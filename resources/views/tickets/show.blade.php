@@ -22,7 +22,7 @@
 
         <div class="mb-6">
             <a href="{{ route('dashboard') }}"
-                class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-[#10b981] transition-colors">
+                class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700 hover:text-emerald-900 transition-colors">
                 <x-heroicon-o-arrow-left class="w-4 h-4" />
                 Volver al Panel
             </a>
@@ -31,7 +31,7 @@
         <header class="relative z-40 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between mb-6">
             <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2.5">
-                    <span class="text-[11px] font-bold tracking-wide text-[#10b981]">
+                    <span class="text-[11px] font-bold tracking-wide text-emerald-700">
                         {{ $ticket->ticket_number }}
                     </span>
                     @include('tickets.partials.status-badge', ['status' => $ticket->status])
@@ -43,7 +43,7 @@
 
                 <p class="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-500">
                     <span
-                        class="flex items-center justify-center w-7 h-7 rounded-full bg-gray-100 text-[11px] font-bold text-gray-600">
+                        class="flex items-center justify-center w-7 h-7 rounded-full bg-emerald-100 text-[11px] font-bold text-emerald-800">
                         {{ strtoupper(mb_substr($ticket->requester->name, 0, 1)) }}
                     </span>
                     <span>
@@ -66,8 +66,8 @@
                             @method('PATCH')
 
                             <button type="submit"
-                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#22c55e] text-white text-sm font-semibold 
-                                rounded-xl hover:bg-[#16a34a] transition-colors cursor-pointer shadow-sm">
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-semibold 
+                                rounded-xl hover:bg-emerald-700 transition-colors cursor-pointer shadow-sm">
                                 <x-heroicon-o-check-circle class="w-4 h-4" />
                                 Marcar como resuelto
                             </button>
@@ -79,13 +79,13 @@
                     @can('tickets.assign')
                         <div class="relative shrink-0">
                             <button id="assignmentButton" type="button"
-                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800 text-white text-sm font-semibold rounded-xl hover:bg-emerald-900 transition-colors cursor-pointer shadow-sm">
                                 <x-heroicon-o-user-plus class="w-4 h-4" />
                                 {{ $ticket->assignee ? 'Reasignar agente' : 'Asignar agente' }}
                             </button>
 
                             <div id="assignmentForm" @class([
-                                'absolute right-0 top-full mt-3 z-50 w-80 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-xl p-5',
+                                'absolute right-0 top-full mt-3 z-50 w-80 max-w-[calc(100vw-2rem)] bg-white border border-emerald-100 rounded-2xl shadow-xl p-5',
                                 'hidden' => !$errors->has('agent_id'),
                             ])>
                                 <div class="mb-4">
@@ -107,9 +107,9 @@
                                     </label>
 
                                     <select id="agent_id" name="agent_id" @class([
-                                        'w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:bg-white transition-all cursor-pointer',
+                                        'w-full bg-emerald-50/50 border rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:bg-white transition-all cursor-pointer',
                                         'border-red-300 focus:border-red-500' => $errors->has('agent_id'),
-                                        'border-gray-200 focus:border-[#10b981]' => !$errors->has('agent_id'),
+                                        'border-emerald-100 focus:border-emerald-500' => !$errors->has('agent_id'),
                                     ])>
                                         <option value="">Selecciona un agente</option>
                                         @foreach ($agents as $agent)
@@ -129,7 +129,7 @@
                                             Cancelar
                                         </button>
                                         <button type="submit"
-                                            class="px-4 py-2 bg-[#22c55e] text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-100 hover:bg-[#16a34a] transition-all cursor-pointer">
+                                            class="px-4 py-2 bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-100 hover:bg-emerald-700 transition-all cursor-pointer">
                                             Asignar
                                         </button>
                                     </div>
@@ -146,7 +146,7 @@
                             @method('PATCH')
 
                             <button type="submit"
-                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800 text-white text-sm font-semibold rounded-xl hover:bg-emerald-900 transition-colors cursor-pointer shadow-sm">
                                 <x-heroicon-o-lock-closed class="w-4 h-4" />
                                 Cerrar ticket
                             </button>
@@ -161,7 +161,7 @@
                             @method('PATCH')
 
                             <button type="submit"
-                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 text-sm font-semibold rounded-xl border border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer shadow-sm">
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-emerald-800 text-sm font-semibold rounded-xl border border-emerald-200 hover:bg-emerald-50 transition-colors cursor-pointer shadow-sm">
                                 <x-heroicon-o-arrow-path class="w-4 h-4" />
                                 Reabrir
                             </button>
@@ -174,8 +174,8 @@
         </header>
 
         <section
-            class="relative z-30 border border-gray-200 rounded-2xl bg-white shadow-sm shadow-gray-100 overflow-visible">
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+            class="relative z-30 border border-emerald-100 rounded-2xl bg-white/90 shadow-sm shadow-emerald-900/5 overflow-visible">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-emerald-100">
                 <div class="px-5 py-4">
                     <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Departamento</p>
                     <p class="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-gray-800">
@@ -198,7 +198,7 @@
 
                         @can('changePriority', $ticket)
                             <button id="priorityButton" type="button"
-                                class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-emerald-50 hover:text-[#10b981] transition-colors cursor-pointer"
+                                class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 transition-colors cursor-pointer"
                                 title="Cambiar prioridad">
                                 <x-heroicon-o-pencil-square class="w-4 h-4" />
                             </button>
@@ -207,7 +207,7 @@
 
                     @can('changePriority', $ticket)
                         <div id="priorityForm" @class([
-                            'absolute left-0 top-full mt-3 z-40 w-72 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-xl p-5',
+                            'absolute left-0 top-full mt-3 z-40 w-72 max-w-[calc(100vw-2rem)] bg-white border border-emerald-100 rounded-2xl shadow-xl p-5',
                             'hidden' => !$errors->has('priority_id'),
                         ])>
                             <div class="mb-4">
@@ -227,9 +227,9 @@
                                 </label>
 
                                 <select id="priority_id" name="priority_id" @class([
-                                    'w-full bg-gray-50 border rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:bg-white transition-all cursor-pointer',
+                                    'w-full bg-emerald-50/50 border rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:bg-white transition-all cursor-pointer',
                                     'border-red-300 focus:border-red-500' => $errors->has('priority_id'),
-                                    'border-gray-200 focus:border-[#10b981]' => !$errors->has('priority_id'),
+                                    'border-emerald-100 focus:border-emerald-500' => !$errors->has('priority_id'),
                                 ])>
                                     @foreach ($priorities as $priority)
                                         <option value="{{ $priority->id }}" @selected(old('priority_id', $ticket->priority_id) == $priority->id)>
@@ -248,7 +248,7 @@
                                         Cancelar
                                     </button>
                                     <button type="submit"
-                                        class="px-4 py-2 bg-[#22c55e] text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-100 hover:bg-[#16a34a] transition-all cursor-pointer">
+                                        class="px-4 py-2 bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-100 hover:bg-emerald-700 transition-all cursor-pointer">
                                         Actualizar
                                     </button>
                                 </div>
@@ -274,7 +274,7 @@
             </div>
         </section>
 
-        <section class="mt-6 border border-gray-200 rounded-2xl bg-white shadow-sm shadow-gray-100 px-5 sm:px-6 py-6">
+        <section class="mt-6 border border-emerald-100 rounded-2xl bg-white/90 shadow-sm shadow-emerald-900/5 px-5 sm:px-6 py-6">
             <h2 class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-4">Descripción</h2>
             <div class="text-sm text-gray-700 leading-7 whitespace-pre-line">
                 {{ $ticket->description }}
@@ -282,7 +282,7 @@
         </section>
 
         @can('comments.create_internal')
-            <section class="mt-6 border border-gray-200 rounded-2xl bg-white shadow-sm shadow-gray-100 px-5 sm:px-6 py-6">
+            <section class="mt-6 border border-emerald-100 rounded-2xl bg-white/90 shadow-sm shadow-emerald-900/5 px-5 sm:px-6 py-6">
                 <div class="flex items-center justify-between gap-4">
                     <div>
                         <h2 class="text-sm font-semibold text-gray-900">Notas internas</h2>
@@ -291,7 +291,7 @@
                         </p>
                     </div>
 
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-[11px] font-semibold text-amber-700">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-[11px] font-semibold text-emerald-800">
                         <x-heroicon-o-lock-closed class="w-3.5 h-3.5" />
                         Interno
                     </span>
@@ -308,12 +308,12 @@
                         </p>
                     </div>
                 @else
-                    <div class="mt-5 divide-y divide-gray-100">
+                    <div class="mt-5 divide-y divide-emerald-100">
                         @foreach ($comments as $comment)
                             <article class="py-5 first:pt-0 last:pb-0">
                                 <div class="flex items-start gap-3">
                                     <span
-                                        class="flex items-center justify-center w-9 h-9 rounded-full bg-amber-50 text-xs font-bold text-amber-700 shrink-0">
+                                        class="flex items-center justify-center w-9 h-9 rounded-full bg-emerald-100 text-xs font-bold text-emerald-800 shrink-0">
                                         {{ strtoupper(mb_substr($comment->user->name, 0, 1)) }}
                                     </span>
 
@@ -337,10 +337,10 @@
                     </div>
                 @endif
 
-                <div class="mt-6 pt-6 border-t border-gray-100">
+                <div class="mt-6 pt-6 border-t border-emerald-100">
                     <div id="internalNoteButtonContainer" class="flex justify-end">
                         <button id="internalNoteButton" type="button"
-                            class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
+                            class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800 text-white text-sm font-semibold rounded-xl hover:bg-emerald-900 transition-colors cursor-pointer shadow-sm">
                             <x-heroicon-o-plus class="w-4 h-4" />
                             Agregar nota
                         </button>
@@ -348,7 +348,7 @@
 
                     <form id="internalNoteForm" action="{{ route('tickets.comments.store', $ticket) }}" method="POST"
                         @class([
-                            'mt-4 rounded-2xl border border-gray-200 bg-gray-50 p-5',
+                            'mt-4 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-5',
                             'hidden' => !$errors->has('body'),
                         ])>
                         @csrf
@@ -369,7 +369,7 @@
                             @class([
                                 'w-full bg-white border rounded-xl px-4 py-3 text-sm text-gray-700 resize-y focus:outline-none transition-all',
                                 'border-red-300 focus:border-red-500' => $errors->has('body'),
-                                'border-gray-200 focus:border-[#10b981]' => !$errors->has('body'),
+                                'border-emerald-100 focus:border-emerald-500' => !$errors->has('body'),
                             ])>{{ old('body') }}</textarea>
 
                         @error('body')
@@ -383,7 +383,7 @@
                             </button>
 
                             <button type="submit"
-                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-colors cursor-pointer shadow-sm">
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-800 text-white text-sm font-semibold rounded-xl hover:bg-emerald-900 transition-colors cursor-pointer shadow-sm">
                                 <x-heroicon-o-check class="w-4 h-4" />
                                 Guardar nota
                             </button>
