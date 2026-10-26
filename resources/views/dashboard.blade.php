@@ -41,7 +41,7 @@
             </header>
 
             <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-                <article class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm shadow-gray-100">
+                <article class="bg-white/90 border border-emerald-100 rounded-2xl p-5 shadow-sm shadow-emerald-900/5">
                     <div class="flex items-center justify-between">
                         <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 text-slate-600">
                             <x-heroicon-o-inbox class="w-5 h-5" />
@@ -75,8 +75,8 @@
                 </article>
             </section>
 
-            <section class="mt-6 bg-white border border-gray-200 rounded-2xl shadow-sm shadow-gray-100 overflow-hidden">
-                <div class="flex items-center justify-between gap-4 px-5 sm:px-6 py-5 border-b border-gray-100">
+            <section class="mt-6 bg-white/90 border border-emerald-100 rounded-2xl shadow-sm shadow-emerald-900/5 overflow-hidden">
+                <div class="flex items-center justify-between gap-4 px-5 sm:px-6 py-5 border-b border-emerald-100 bg-emerald-50/60">
                     <div>
                         <h2 class="text-sm font-semibold text-gray-900">Solicitudes recientes</h2>
                         <p class="mt-1 text-xs text-gray-500">Tus últimas solicitudes de soporte.</p>
@@ -90,7 +90,7 @@
 
                 @forelse ($recentTickets as $ticket)
                     <a href="{{ route('tickets.show', $ticket) }}"
-                        class="flex items-center justify-between gap-4 px-5 sm:px-6 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors no-underline">
+                        class="flex items-center justify-between gap-4 px-5 sm:px-6 py-4 border-b border-emerald-50 last:border-b-0 hover:bg-emerald-50/50 transition-colors no-underline">
                         <div class="min-w-0">
                             <p class="text-[11px] font-bold tracking-wide text-[#10b981]">
                                 {{ $ticket->ticket_number }}
@@ -109,7 +109,7 @@
                         </div>
                     </a>
                 @empty
-                    <div class="px-6 py-12 text-center">
+                    <div class="px-6 py-12 text-center bg-emerald-50/30">
                         <span class="mx-auto flex items-center justify-center w-12 h-12 rounded-2xl bg-gray-100 text-gray-400">
                             <x-heroicon-o-ticket class="w-6 h-6" />
                         </span>
