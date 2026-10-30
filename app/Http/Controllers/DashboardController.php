@@ -27,7 +27,7 @@ class DashboardController extends Controller
                 ->whereHas('status', fn ($query) => $query->whereIn('code', ['open', 'in_progress']))
                 ->where(function ($query) {
                     $query->whereNull('assigned_to')
-                        ->orWhereHas('priority', fn ($priority) => $priority->where('level', 1));
+                        ->orWhereHas('priority', fn ($priority) => $priority->where('level', '>=', 3));
                 })
                 ->latest()
                 ->limit(5)
