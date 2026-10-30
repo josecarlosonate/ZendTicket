@@ -33,6 +33,37 @@ class DashboardController extends Controller
             return view('dashboard.admin', compact('summary', 'recentActivities'));
         }
 
+        if ($user->hasRole('supervisor') && $user->can('tickets.view_all')) {
+            $tickets = Ticket::query()->visibleTo($user);
+
+            $summary = [
+                'open' => (clone $tickets)->whereHas('status', fn ($query) => $query->where('code', 'open'))->count(),
+                'in_progress' => (clone $tickets)->whereHas('status', fn ($query) => $query->where('code', 'in_progress'))->count(),
+                'resolved' => (clone $tickets)->whereHas('status', fn ($query) => $query->where('code', 'resolved'))->count(),
+                'unassigned' => (clone $tickets)->whereNull('assigned_to')
+                    ->whereHas('status', fn ($query) => $query->where('code', 'open'))->count(),
+            ];
+
+            $needsAttention = (clone $tickets)
+                ->with(['status', 'priority', 'assignee'])
+                ->whereHas('status', fn ($query) => $query->whereIn('code', ['open', 'in_progress']))
+                ->where(function ($query) {
+                    $query->whereNull('assigned_to')
+                        ->orWhereHas('priority', fn ($priority) => $priority->where('level', '>=', 3));
+                })
+                ->latest()
+                ->limit(5)
+                ->get();
+
+            $recentTickets = (clone $tickets)
+                ->with(['status', 'priority', 'assignee'])
+                ->latest()
+                ->limit(5)
+                ->get();
+
+            return view('dashboard.supervisor', compact('summary', 'needsAttention', 'recentTickets'));
+        }
+
         if (! $user->hasRole('customer')) {
             return view('dashboard');
         }
